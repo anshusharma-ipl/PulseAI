@@ -10,7 +10,6 @@
     --navy-line:#24384F;
     --teal:     #1F9E8E;
     --amber:    #C9A24B;
-    --coral:    #E15B4C;
     --ink:      #0F1B2D;
     --ink-soft: #5C7089;
     --paper:    #F7F8FA;
@@ -21,205 +20,143 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; font-family: 'Inter','Segoe UI',system-ui,sans-serif; background: var(--navy); }
 
-  /* ── top bar ── */
   .bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 10px 18px; background: var(--navy); border-bottom: 1px solid var(--navy-line);
-    font-size: 13px; color: #C9D3DE; height: 41px; gap: 12px; flex-shrink: 0;
+    font-size: 13px; color: #C9D3DE; height: 41px; gap: 12px;
   }
   .bar a { color: var(--amber); text-decoration: none; font-weight: 600; }
   .bar a:hover { text-decoration: underline; }
-  .bar-right { display: flex; align-items: center; gap: 12px; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #3a4a5a; transition: background 0.3s; }
-  .status-dot.live { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
-  .status-dot.warn { background: var(--amber); }
-  #conn-label { font-family: var(--mono); font-size: 11px; color: #7E8CA0; }
 
-  /* ── main ── */
-  #main { display: flex; flex-direction: column; height: calc(100vh - 41px); }
-
-  /* ── full-screen iframe ── */
-  #frame-wrap { display: none; flex: 1; min-height: 0; }
-  #frame-wrap.visible { display: flex; flex-direction: column; }
-  #app-frame { flex: 1; border: 0; width: 100%; display: block; background: var(--paper); }
-
-  /* ── setup card (shown only when Langflow not configured) ── */
-  #setup-screen {
-    display: none; flex: 1; align-items: center; justify-content: center;
-    padding: 32px 20px; overflow-y: auto;
+  #main {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: calc(100vh - 41px); padding: 32px 20px;
   }
-  #setup-screen.visible { display: flex; }
-  .setup-card {
+
+  .card {
     background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    padding: 40px; max-width: 540px; width: 100%; text-align: center;
+    padding: 40px; max-width: 520px; width: 100%; text-align: center;
   }
+
+  /* ── launching state ── */
+  .launch-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--teal), #14776b);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+  }
+  .launch-icon svg path { stroke: #fff; }
+  .spin-ring {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 3px solid #DEE4EA; border-top-color: var(--teal);
+    animation: spin 0.8s linear infinite; margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .card h2 { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .card p  { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 22px; }
+  .card .note { font-size: 12px; color: var(--ink-soft); margin-top: 10px; margin-bottom: 0; }
+
+  /* ── setup state ── */
   .setup-icon {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: linear-gradient(135deg,var(--amber),#8a6010);
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--amber), #8a6010);
     display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
   }
   .setup-icon svg { stroke: #fff; }
-  .setup-card h2 { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-  .setup-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 22px; }
-  .setup-btn {
+
+  .btn {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 11px 24px; border-radius: 8px; border: none;
+    padding: 11px 26px; border-radius: 8px; border: none;
     background: var(--navy); color: #fff; font-size: 14px; font-weight: 600;
     cursor: pointer; text-decoration: none; transition: background 0.15s;
   }
-  .setup-btn:hover { background: var(--teal); color: #fff; }
-  .setup-note { font-size: 12px; color: var(--ink-soft); margin-top: 14px; }
+  .btn:hover { background: var(--teal); color: #fff; text-decoration: none; }
 
-  /* ── loading screen ── */
-  #loading-screen {
-    display: none; flex: 1; align-items: center; justify-content: center;
-    flex-direction: column; gap: 16px; color: #7E8CA0;
-  }
-  #loading-screen.visible { display: flex; }
-  .spin-ring {
-    width: 40px; height: 40px; border-radius: 50%;
-    border: 3px solid #24384F; border-top-color: var(--teal);
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #loading-screen span { font-size: 13px; font-family: var(--mono); }
+  #launch-view  { display: none; }
+  #setup-view   { display: none; }
+  #launch-view.visible { display: block; }
+  #setup-view.visible  { display: block; }
 </style>
 </head>
 <body>
 
 <div class="bar">
   <a href="../index.html">&larr; Back to Pulse AI docs</a>
-  <div class="bar-right" id="bar-right">
-    <span class="status-dot" id="status-dot"></span>
-    <span id="conn-label">loading&hellip;</span>
-  </div>
 </div>
 
 <div id="main">
+  <div class="card">
 
-  <!-- Loading spinner while we check credentials -->
-  <div id="loading-screen" class="visible">
-    <div class="spin-ring"></div>
-    <span id="loading-label">Checking configuration&hellip;</span>
-  </div>
+    <!-- Shown when Langflow IS configured — counts down then redirects -->
+    <div id="launch-view">
+      <div class="spin-ring"></div>
+      <h2>Launching Pulse AI&hellip;</h2>
+      <p id="launch-desc">Opening the live app with your Langflow configuration.</p>
+      <p class="note">You are being redirected to
+        <a id="direct-link" href="#" style="color:var(--teal);font-weight:600;">pulseai&#8209;anshusharma.streamlit.app</a>
+      </p>
+    </div>
 
-  <!-- Shown only if Langflow is NOT configured -->
-  <div id="setup-screen">
-    <div class="setup-card">
+    <!-- Shown when Langflow is NOT configured -->
+    <div id="setup-view">
       <div class="setup-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z"/>
         </svg>
       </div>
       <h2>Connect Langflow first</h2>
-      <p>To run the live demo you need to configure your Langflow URLs and API key.<br/>
-         It only takes 30 seconds and is saved for all future visits.</p>
-      <a class="setup-btn" href="../index.html" id="settings-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z"/>
+      <p>Configure your Langflow URLs and API key — takes 30 seconds, saved permanently for future visits.</p>
+      <a class="btn" href="../index.html#connect">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
         </svg>
         Go to Connect Langflow
       </a>
-      <p class="setup-note">After saving your settings, come back here — the app loads automatically.</p>
+      <p class="note">After saving, come back here — the app will open automatically.</p>
     </div>
-  </div>
 
-  <!-- Streamlit app embedded full-screen -->
-  <div id="frame-wrap">
-    <iframe id="app-frame" allow="clipboard-write" title="Pulse AI Live Demo"></iframe>
   </div>
-
 </div>
 
 <script>
 (function () {
-  // ── CONFIG ─────────────────────────────────────────────────────────────────
-  // Replace this with your Streamlit Community Cloud URL after deploying.
-  // e.g. "https://pulseai.streamlit.app"
   var STREAMLIT_URL = "https://pulseai-anshusharma.streamlit.app";
+  var LF_KEY        = "pulseai.langflow.settings.v1";
 
-  var LF_KEY = "pulseai.langflow.settings.v1";
-
-  // ── DOM refs ───────────────────────────────────────────────────────────────
-  var loadingScreen = document.getElementById("loading-screen");
-  var loadingLabel  = document.getElementById("loading-label");
-  var setupScreen   = document.getElementById("setup-screen");
-  var frameWrap     = document.getElementById("frame-wrap");
-  var appFrame      = document.getElementById("app-frame");
-  var dot           = document.getElementById("status-dot");
-  var label         = document.getElementById("conn-label");
-
-  // ── Read Langflow settings saved by the doc-site Settings modal ────────────
   function readLangflowSettings() {
-    try {
-      var raw = localStorage.getItem(LF_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
+    try { return JSON.parse(localStorage.getItem(LF_KEY) || "null"); }
+    catch (e) { return null; }
   }
 
-  // ── Build Streamlit URL with credentials as query params ───────────────────
-  // pulse_app.py reads ?lf_url, ?lf_key, ?lf_portfolio on startup.
   function buildUrl(lf) {
-    var params = [];
-    if (lf.url)          params.push("lf_url="      + encodeURIComponent(lf.url));
-    if (lf.key)          params.push("lf_key="       + encodeURIComponent(lf.key));
-    if (lf.portfolioUrl) params.push("lf_portfolio=" + encodeURIComponent(lf.portfolioUrl));
-    return params.length ? STREAMLIT_URL + "?" + params.join("&") : STREAMLIT_URL;
+    var p = [];
+    if (lf && lf.url)          p.push("lf_url="       + encodeURIComponent(lf.url));
+    if (lf && lf.key)          p.push("lf_key="        + encodeURIComponent(lf.key));
+    if (lf && lf.portfolioUrl) p.push("lf_portfolio="  + encodeURIComponent(lf.portfolioUrl));
+    return p.length ? STREAMLIT_URL + "?" + p.join("&") : STREAMLIT_URL;
   }
 
-  function showApp(lf) {
-    dot.classList.add("live");
-    label.textContent = "live · Langflow configured";
-    loadingScreen.classList.remove("visible");
-    setupScreen.classList.remove("visible");
-    frameWrap.classList.add("visible");
-    appFrame.src = buildUrl(lf);
+  var lf    = readLangflowSettings();
+  var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
+
+  if (hasLf) {
+    var url = buildUrl(lf);
+    document.getElementById("direct-link").href        = url;
+    document.getElementById("direct-link").textContent = STREAMLIT_URL.replace("https://","");
+    document.getElementById("launch-view").classList.add("visible");
+    // Redirect immediately — full page navigation, no iframe, no loop
+    window.location.replace(url);
+  } else {
+    document.getElementById("setup-view").classList.add("visible");
   }
 
-  function showSetup() {
-    dot.classList.add("warn");
-    label.textContent = "Langflow not configured";
-    loadingScreen.classList.remove("visible");
-    frameWrap.classList.remove("visible");
-    setupScreen.classList.add("visible");
-  }
-
-  function showAppNoLangflow() {
-    // Langflow not configured — load app anyway in shell-only mode
-    dot.classList.remove("live");
-    dot.classList.add("warn");
-    label.textContent = "no Langflow — shell only";
-    loadingScreen.classList.remove("visible");
-    setupScreen.classList.remove("visible");
-    frameWrap.classList.add("visible");
-    appFrame.src = STREAMLIT_URL;
-  }
-
-  // ── Main logic ─────────────────────────────────────────────────────────────
-  function init() {
-    var lf = readLangflowSettings();
-    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
-
-    if (hasLf) {
-      loadingLabel.textContent = "Connecting to Pulse AI\u2026";
-      showApp(lf);
-    } else {
-      // No Langflow configured — show the setup prompt
-      showSetup();
-    }
-  }
-
-  // Small delay so loading spinner is visible briefly (feels intentional)
-  setTimeout(init, 300);
-
-  // Re-check when user returns from the settings page
+  // When user comes back after configuring (window gains focus), re-check
   window.addEventListener("focus", function () {
-    var lf = readLangflowSettings();
-    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
-    if (hasLf && !frameWrap.classList.contains("visible")) {
-      showApp(lf);
+    var lf2 = readLangflowSettings();
+    if (lf2 && (lf2.url || lf2.key || lf2.portfolioUrl)) {
+      window.location.replace(buildUrl(lf2));
     }
   });
 })();
