@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>Pulse AI — Live Demo</title>
+<style>
+  :root {
+    --navy:      #0E1B2E;
+    --navy-line: #24384F;
+    --teal:      #1F9E8E;
+    --amber:     #C9A24B;
+    --paper:     #F7F8FA;
+    --card:      #FFFFFF;
+    --line:      #DEE4EA;
+    --ink:       #0F1B2D;
+    --ink-soft:  #5C7089;
+    --mono:      ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--navy); }
+
+  /* ── top bar ── */
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; background: var(--navy); border-bottom: 1px solid var(--navy-line);
+    font-size: 13px; color: #C9D3DE; flex-shrink: 0; gap: 12px; height: 41px;
+  }
+  .bar a { color: var(--amber); text-decoration: none; font-weight: 600; white-space: nowrap; }
+  .bar a:hover { text-decoration: underline; }
+  .bar-right { display: flex; align-items: center; gap: 12px; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #3a4a5a; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .status-dot.connected { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  #conn-label { font-family: var(--mono); font-size: 11px; color: #7E8CA0; }
+
+  /* ── main area ── */
+  #main { display: flex; flex-direction: column; height: calc(100vh - 41px); }
+
+  /* ── error banner ── */
+  #err-banner {
+    display: none; background: #FEF2F1; border-bottom: 1px solid #E15B4C44;
+    padding: 10px 18px; font-size: 13px; color: #B33A2B; text-align: center;
+  }
+  #err-banner.visible { display: block; }
+
+  /* ── launcher card ── */
+  #launcher {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; padding: 32px 20px; overflow-y: auto;
+  }
+  .launch-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 44px 40px; max-width: 580px; width: 100%; text-align: center;
+  }
+  .launch-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--teal), #14776b);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+  }
+  .launch-icon svg path { stroke: #fff; }
+  .launch-card h2 { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .launch-card .sub {
+    font-size: 14px; color: var(--ink-soft); margin-bottom: 26px; line-height: 1.6;
+    max-width: 44ch; margin-left: auto; margin-right: auto;
+  }
+  .steps { text-align: left; margin-bottom: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--ink);
+    color: #fff; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .step-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .step-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+  .step-desc code {
+    font-family: var(--mono); font-size: 12px;
+    background: #EEF2F7; padding: 2px 6px; border-radius: 4px; color: var(--ink);
+    word-break: break-all;
+  }
+  .url-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .url-row input {
+    flex: 1; padding: 9px 12px; border: 1px solid var(--line); border-radius: 7px;
+    font-family: var(--mono); font-size: 13px; background: var(--paper); color: var(--ink);
+    outline: none;
+  }
+  .url-row input:focus { border-color: var(--teal); outline: 2px solid #1F9E8E33; }
+  .btn-connect {
+    padding: 9px 20px; border-radius: 7px; border: none;
+    background: var(--ink); color: #fff; font-size: 14px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  }
+  .btn-connect:hover { background: var(--teal); }
+  .btn-connect:disabled { background: #8a9aaa; cursor: not-allowed; }
+  .launch-note { font-size: 12px; color: var(--ink-soft); }
+
+  /* ── iframe view ── */
+  #frame-wrap { display: none; flex: 1; min-height: 0; }
+  #frame-wrap.visible { display: flex; flex-direction: column; }
+  #app-frame { flex: 1; border: 0; width: 100%; display: block; background: var(--paper); }
+
+  /* ── disconnect button (injected into bar) ── */
+  .btn-disconnect {
+    background: transparent; border: 1px solid #24384F; color: #C9D3DE;
+    font-size: 12px; padding: 4px 10px; border-radius: 5px; cursor: pointer;
+    font-family: inherit; transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-disconnect:hover { border-color: var(--amber); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a href="../index.html">&larr; Back to Pulse AI docs</a>
+  <div class="bar-right" id="bar-right">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="conn-label">not connected</span>
+  </div>
+</div>
+
+<div id="main">
+
+  <div id="err-banner"></div>
+
+  <!-- Launcher -->
+  <div id="launcher">
+    <div class="launch-card">
+      <div class="launch-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h4l2-8 4 16 2-8h6"/>
+        </svg>
+      </div>
+      <h2>Run Pulse AI locally</h2>
+      <p class="sub">The live demo runs as a real Streamlit app — instant startup, no browser runtime download needed.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Install dependencies</div>
+            <div class="step-desc">
+              Run once in your terminal from the project folder:<br/>
+              <code>pip install streamlit requests markdown fpdf2</code>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Start the Streamlit app</div>
+            <div class="step-desc">
+              <code>streamlit run app/pulse_app.py</code><br/>
+              Streamlit will open at <code>http://localhost:8501</code> by default.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Click Connect below</div>
+            <div class="step-desc">
+              The app loads instantly here inside an embedded frame — no waiting.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="url-row">
+        <input id="app-url" type="text"
+               placeholder="http://localhost:8501"
+               value="http://localhost:8501"
+               spellcheck="false" autocomplete="off" />
+        <button class="btn-connect" id="btn-connect">Connect</button>
+      </div>
+      <p class="launch-note">The URL stays in your browser only — nothing is sent anywhere.</p>
+    </div>
+  </div>
+
+  <!-- Embedded Streamlit iframe -->
+  <div id="frame-wrap">
+    <iframe id="app-frame" allow="clipboard-write" title="Pulse AI Live Demo"></iframe>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var APP_URL_KEY  = "pulseai.app.url.v1";
+  var LF_KEY       = "pulseai.langflow.settings.v1";   // written by the doc-site Settings modal
+
+  var urlInput  = document.getElementById("app-url");
+  var btnConn   = document.getElementById("btn-connect");
+  var launcher  = document.getElementById("launcher");
+  var frameWrap = document.getElementById("frame-wrap");
+  var appFrame  = document.getElementById("app-frame");
+  var dot       = document.getElementById("status-dot");
+  var label     = document.getElementById("conn-label");
+  var errBanner = document.getElementById("err-banner");
+  var barRight  = document.getElementById("bar-right");
+
+  var savedUrl = localStorage.getItem(APP_URL_KEY);
+  if (savedUrl) urlInput.value = savedUrl;
+
+  // Read Langflow credentials saved by the doc-site Settings modal
+  function readLangflowSettings() {
+    try {
+      var raw = localStorage.getItem(LF_KEY);
+      return raw ? JSON.parse(raw) : { url: "", portfolioUrl: "", key: "" };
+    } catch (e) {
+      return { url: "", portfolioUrl: "", key: "" };
+    }
+  }
+
+  // Build the full Streamlit URL with Langflow creds appended as query params.
+  // pulse_app.py reads ?lf_url, ?lf_key, ?lf_portfolio on startup.
+  function buildAppUrl(base) {
+    var lf = readLangflowSettings();
+    var params = [];
+    if (lf.url)          params.push("lf_url="       + encodeURIComponent(lf.url));
+    if (lf.key)          params.push("lf_key="        + encodeURIComponent(lf.key));
+    if (lf.portfolioUrl) params.push("lf_portfolio="  + encodeURIComponent(lf.portfolioUrl));
+    return params.length ? base + "?" + params.join("&") : base;
+  }
+
+  function addDisconnectBtn() {
+    if (document.getElementById("btn-disconnect")) return;
+    var btn = document.createElement("button");
+    btn.id = "btn-disconnect";
+    btn.className = "btn-disconnect";
+    btn.textContent = "Disconnect";
+    btn.addEventListener("click", function () {
+      localStorage.removeItem(APP_URL_KEY);
+      btn.remove();
+      setDisconnected(null);
+    });
+    barRight.insertBefore(btn, barRight.firstChild);
+  }
+
+  function setConnected(baseUrl) {
+    var fullUrl = buildAppUrl(baseUrl);
+    dot.classList.add("connected");
+    var lf = readLangflowSettings();
+    var hasLf = !!(lf.url || lf.key || lf.portfolioUrl);
+    label.textContent = (hasLf ? "connected · Langflow configured" : "connected · no Langflow");
+    launcher.style.display = "none";
+    frameWrap.classList.add("visible");
+    errBanner.classList.remove("visible");
+    appFrame.src = fullUrl;
+    localStorage.setItem(APP_URL_KEY, baseUrl);
+    addDisconnectBtn();
+  }
+
+  function setDisconnected(msg) {
+    dot.classList.remove("connected");
+    label.textContent = "not connected";
+    launcher.style.display = "";
+    frameWrap.classList.remove("visible");
+    appFrame.src = "about:blank";
+    if (msg) {
+      errBanner.textContent = msg;
+      errBanner.classList.add("visible");
+    } else {
+      errBanner.classList.remove("visible");
+    }
+  }
+
+  function tryConnect(baseUrl) {
+    btnConn.disabled = true;
+    btnConn.textContent = "Connecting\u2026";
+    fetch(baseUrl, { mode: "no-cors", cache: "no-store" })
+      .then(function ()  { setConnected(baseUrl); })
+      .catch(function () { setDisconnected("Could not reach " + baseUrl + " \u2014 make sure Streamlit is running (step 2 above)."); })
+      .finally(function () { btnConn.disabled = false; btnConn.textContent = "Connect"; });
+  }
+
+  btnConn.addEventListener("click", function () {
+    var raw = urlInput.value.trim();
+    if (!raw) return;
+    tryConnect(raw.startsWith("http") ? raw : "http://" + raw);
+  });
+
+  urlInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") btnConn.click();
+  });
+
+  // Auto-reconnect if a URL was saved from a previous visit
+  if (savedUrl) {
+    fetch(savedUrl, { mode: "no-cors", cache: "no-store" })
+      .then(function ()  { setConnected(savedUrl); })
+      .catch(function () { /* Streamlit not running — stay on launcher silently */ });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+[server]
+# Allows the Streamlit app to be embedded inside an iframe on the doc site.
+# Required so the Live Demo launcher page can load the app in a frame.
+enableCORS = false
+enableXsrfProtection = false
+headless = true
+
+[theme]
+base = "light"

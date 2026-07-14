@@ -1,0 +1,42 @@
+﻿# ── Credentials & secrets ─────────────────────────────────────────────────────
+# NEVER commit these. Store credentials in environment variables only.
+.env
+.env.*
+*.env
+secrets.toml
+.streamlit/secrets.toml
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+
+# ── Langflow exports ──────────────────────────────────────────────────────────
+# Langflow JSON exports MAY contain API keys embedded in component fields.
+# Review each file before committing. Uncomment the next line to block all JSON:
+# *.json
+
+# ── OS & editors ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# ── Build artefacts ───────────────────────────────────────────────────────────
+PulseAI.zip
+*.zip
