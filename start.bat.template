@@ -8,10 +8,10 @@ echo   Pulse AI — One-click startup
 echo  ==========================================
 echo.
 
-:: ── CONFIG ────────────────────────────────────────────────────────────────────
-:: Your Langflow flow IDs (from your Langflow URL)
-set LF_ACCOUNT_FLOW=c94cf6ad-4f38-4d92-9f6b-d33c50ca5ba5
-set LF_PORTFOLIO_FLOW=c94cf6ad-4f38-4d92-9f6b-d33c50ca5ba5
+:: ── CONFIG — edit these values before running ─────────────────────────────────
+:: Your Langflow flow IDs (from your Langflow flow URL)
+set LF_ACCOUNT_FLOW=PASTE_YOUR_ACCOUNT_FLOW_ID_HERE
+set LF_PORTFOLIO_FLOW=PASTE_YOUR_PORTFOLIO_FLOW_ID_HERE
 
 :: Langflow port (default 7860)
 set LF_PORT=7860
@@ -20,7 +20,8 @@ set LF_PORT=7860
 set ST_PORT=8501
 
 :: ngrok auth token — get yours free at https://dashboard.ngrok.com/get-started/your-authtoken
-:: Paste it here once, then you never need to touch this file again
+:: Copy start.bat.template to start.bat and paste your token here
+:: start.bat is in .gitignore — it will never be committed
 set NGROK_TOKEN=PASTE_YOUR_NGROK_AUTHTOKEN_HERE
 
 :: ─────────────────────────────────────────────────────────────────────────────
@@ -124,9 +125,9 @@ echo.
 echo   Langflow  : http://localhost:%LF_PORT%
 echo   ngrok     : !NGROK_URL!
 echo   Streamlit : http://localhost:%ST_PORT%
+echo   Docs site : http://localhost:5500
 echo.
-echo   Browser will open the docs site shortly.
-echo   Close this window to keep services running.
+echo   Browser opened with fresh ngrok URL saved.
 echo   Run stop.bat to shut everything down.
 echo  ==========================================
 echo.
