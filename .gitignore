@@ -40,5 +40,3 @@ desktop.ini
 # ── Build artefacts ───────────────────────────────────────────────────────────
 PulseAI.zip
 *.zip
-# Local startup script — contains ngrok token, never commit
-start.bat
