@@ -6,112 +6,83 @@
 <title>Pulse AI — Live Demo</title>
 <style>
   :root {
-    --navy:      #0E1B2E;
-    --navy-line: #24384F;
-    --teal:      #1F9E8E;
-    --amber:     #C9A24B;
-    --paper:     #F7F8FA;
-    --card:      #FFFFFF;
-    --line:      #DEE4EA;
-    --ink:       #0F1B2D;
-    --ink-soft:  #5C7089;
-    --mono:      ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    --navy:     #0E1B2E;
+    --navy-line:#24384F;
+    --teal:     #1F9E8E;
+    --amber:    #C9A24B;
+    --coral:    #E15B4C;
+    --ink:      #0F1B2D;
+    --ink-soft: #5C7089;
+    --paper:    #F7F8FA;
+    --card:     #FFFFFF;
+    --line:     #DEE4EA;
+    --mono:     ui-monospace,'Cascadia Code','Consolas',monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--navy); }
+  html, body { height: 100%; font-family: 'Inter','Segoe UI',system-ui,sans-serif; background: var(--navy); }
 
   /* ── top bar ── */
   .bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 10px 18px; background: var(--navy); border-bottom: 1px solid var(--navy-line);
-    font-size: 13px; color: #C9D3DE; flex-shrink: 0; gap: 12px; height: 41px;
+    font-size: 13px; color: #C9D3DE; height: 41px; gap: 12px; flex-shrink: 0;
   }
-  .bar a { color: var(--amber); text-decoration: none; font-weight: 600; white-space: nowrap; }
+  .bar a { color: var(--amber); text-decoration: none; font-weight: 600; }
   .bar a:hover { text-decoration: underline; }
   .bar-right { display: flex; align-items: center; gap: 12px; }
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #3a4a5a; flex-shrink: 0;
-    transition: background 0.3s;
-  }
-  .status-dot.connected { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #3a4a5a; transition: background 0.3s; }
+  .status-dot.live { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .status-dot.warn { background: var(--amber); }
   #conn-label { font-family: var(--mono); font-size: 11px; color: #7E8CA0; }
 
-  /* ── main area ── */
+  /* ── main ── */
   #main { display: flex; flex-direction: column; height: calc(100vh - 41px); }
 
-  /* ── error banner ── */
-  #err-banner {
-    display: none; background: #FEF2F1; border-bottom: 1px solid #E15B4C44;
-    padding: 10px 18px; font-size: 13px; color: #B33A2B; text-align: center;
-  }
-  #err-banner.visible { display: block; }
-
-  /* ── launcher card ── */
-  #launcher {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    flex: 1; padding: 32px 20px; overflow-y: auto;
-  }
-  .launch-card {
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    padding: 44px 40px; max-width: 580px; width: 100%; text-align: center;
-  }
-  .launch-icon {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: linear-gradient(135deg, var(--teal), #14776b);
-    display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
-  }
-  .launch-icon svg path { stroke: #fff; }
-  .launch-card h2 { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-  .launch-card .sub {
-    font-size: 14px; color: var(--ink-soft); margin-bottom: 26px; line-height: 1.6;
-    max-width: 44ch; margin-left: auto; margin-right: auto;
-  }
-  .steps { text-align: left; margin-bottom: 24px; display: flex; flex-direction: column; gap: 12px; }
-  .step {
-    display: flex; gap: 14px; align-items: flex-start;
-    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
-    padding: 12px 14px;
-  }
-  .step-num {
-    width: 24px; height: 24px; border-radius: 50%; background: var(--ink);
-    color: #fff; font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
-  }
-  .step-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
-  .step-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
-  .step-desc code {
-    font-family: var(--mono); font-size: 12px;
-    background: #EEF2F7; padding: 2px 6px; border-radius: 4px; color: var(--ink);
-    word-break: break-all;
-  }
-  .url-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
-  .url-row input {
-    flex: 1; padding: 9px 12px; border: 1px solid var(--line); border-radius: 7px;
-    font-family: var(--mono); font-size: 13px; background: var(--paper); color: var(--ink);
-    outline: none;
-  }
-  .url-row input:focus { border-color: var(--teal); outline: 2px solid #1F9E8E33; }
-  .btn-connect {
-    padding: 9px 20px; border-radius: 7px; border: none;
-    background: var(--ink); color: #fff; font-size: 14px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; transition: background 0.15s;
-  }
-  .btn-connect:hover { background: var(--teal); }
-  .btn-connect:disabled { background: #8a9aaa; cursor: not-allowed; }
-  .launch-note { font-size: 12px; color: var(--ink-soft); }
-
-  /* ── iframe view ── */
+  /* ── full-screen iframe ── */
   #frame-wrap { display: none; flex: 1; min-height: 0; }
   #frame-wrap.visible { display: flex; flex-direction: column; }
   #app-frame { flex: 1; border: 0; width: 100%; display: block; background: var(--paper); }
 
-  /* ── disconnect button (injected into bar) ── */
-  .btn-disconnect {
-    background: transparent; border: 1px solid #24384F; color: #C9D3DE;
-    font-size: 12px; padding: 4px 10px; border-radius: 5px; cursor: pointer;
-    font-family: inherit; transition: border-color 0.15s, color 0.15s;
+  /* ── setup card (shown only when Langflow not configured) ── */
+  #setup-screen {
+    display: none; flex: 1; align-items: center; justify-content: center;
+    padding: 32px 20px; overflow-y: auto;
   }
-  .btn-disconnect:hover { border-color: var(--amber); color: var(--amber); }
+  #setup-screen.visible { display: flex; }
+  .setup-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 40px; max-width: 540px; width: 100%; text-align: center;
+  }
+  .setup-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg,var(--amber),#8a6010);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+  }
+  .setup-icon svg { stroke: #fff; }
+  .setup-card h2 { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .setup-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 22px; }
+  .setup-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 24px; border-radius: 8px; border: none;
+    background: var(--navy); color: #fff; font-size: 14px; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: background 0.15s;
+  }
+  .setup-btn:hover { background: var(--teal); color: #fff; }
+  .setup-note { font-size: 12px; color: var(--ink-soft); margin-top: 14px; }
+
+  /* ── loading screen ── */
+  #loading-screen {
+    display: none; flex: 1; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px; color: #7E8CA0;
+  }
+  #loading-screen.visible { display: flex; }
+  .spin-ring {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid #24384F; border-top-color: var(--teal);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-screen span { font-size: 13px; font-family: var(--mono); }
 </style>
 </head>
 <body>
@@ -120,70 +91,42 @@
   <a href="../index.html">&larr; Back to Pulse AI docs</a>
   <div class="bar-right" id="bar-right">
     <span class="status-dot" id="status-dot"></span>
-    <span id="conn-label">not connected</span>
+    <span id="conn-label">loading&hellip;</span>
   </div>
 </div>
 
 <div id="main">
 
-  <div id="err-banner"></div>
+  <!-- Loading spinner while we check credentials -->
+  <div id="loading-screen" class="visible">
+    <div class="spin-ring"></div>
+    <span id="loading-label">Checking configuration&hellip;</span>
+  </div>
 
-  <!-- Launcher -->
-  <div id="launcher">
-    <div class="launch-card">
-      <div class="launch-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+  <!-- Shown only if Langflow is NOT configured -->
+  <div id="setup-screen">
+    <div class="setup-card">
+      <div class="setup-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12h4l2-8 4 16 2-8h6"/>
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z"/>
         </svg>
       </div>
-      <h2>Run Pulse AI locally</h2>
-      <p class="sub">The live demo runs as a real Streamlit app — instant startup, no browser runtime download needed.</p>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <div class="step-title">Install dependencies</div>
-            <div class="step-desc">
-              Run once in your terminal from the project folder:<br/>
-              <code>pip install streamlit requests markdown fpdf2</code>
-            </div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <div class="step-title">Start the Streamlit app</div>
-            <div class="step-desc">
-              <code>streamlit run app/pulse_app.py</code><br/>
-              Streamlit will open at <code>http://localhost:8501</code> by default.
-            </div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <div class="step-title">Click Connect below</div>
-            <div class="step-desc">
-              The app loads instantly here inside an embedded frame — no waiting.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="url-row">
-        <input id="app-url" type="text"
-               placeholder="http://localhost:8501"
-               value="http://localhost:8501"
-               spellcheck="false" autocomplete="off" />
-        <button class="btn-connect" id="btn-connect">Connect</button>
-      </div>
-      <p class="launch-note">The URL stays in your browser only — nothing is sent anywhere.</p>
+      <h2>Connect Langflow first</h2>
+      <p>To run the live demo you need to configure your Langflow URLs and API key.<br/>
+         It only takes 30 seconds and is saved for all future visits.</p>
+      <a class="setup-btn" href="../index.html" id="settings-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z"/>
+        </svg>
+        Go to Connect Langflow
+      </a>
+      <p class="setup-note">After saving your settings, come back here — the app loads automatically.</p>
     </div>
   </div>
 
-  <!-- Embedded Streamlit iframe -->
+  <!-- Streamlit app embedded full-screen -->
   <div id="frame-wrap">
     <iframe id="app-frame" allow="clipboard-write" title="Pulse AI Live Demo"></iframe>
   </div>
@@ -192,110 +135,93 @@
 
 <script>
 (function () {
-  var APP_URL_KEY  = "pulseai.app.url.v1";
-  var LF_KEY       = "pulseai.langflow.settings.v1";   // written by the doc-site Settings modal
+  // ── CONFIG ─────────────────────────────────────────────────────────────────
+  // Replace this with your Streamlit Community Cloud URL after deploying.
+  // e.g. "https://pulseai.streamlit.app"
+  var STREAMLIT_URL = "https://pulseai.streamlit.app";
 
-  var urlInput  = document.getElementById("app-url");
-  var btnConn   = document.getElementById("btn-connect");
-  var launcher  = document.getElementById("launcher");
-  var frameWrap = document.getElementById("frame-wrap");
-  var appFrame  = document.getElementById("app-frame");
-  var dot       = document.getElementById("status-dot");
-  var label     = document.getElementById("conn-label");
-  var errBanner = document.getElementById("err-banner");
-  var barRight  = document.getElementById("bar-right");
+  var LF_KEY = "pulseai.langflow.settings.v1";
 
-  var savedUrl = localStorage.getItem(APP_URL_KEY);
-  if (savedUrl) urlInput.value = savedUrl;
+  // ── DOM refs ───────────────────────────────────────────────────────────────
+  var loadingScreen = document.getElementById("loading-screen");
+  var loadingLabel  = document.getElementById("loading-label");
+  var setupScreen   = document.getElementById("setup-screen");
+  var frameWrap     = document.getElementById("frame-wrap");
+  var appFrame      = document.getElementById("app-frame");
+  var dot           = document.getElementById("status-dot");
+  var label         = document.getElementById("conn-label");
 
-  // Read Langflow credentials saved by the doc-site Settings modal
+  // ── Read Langflow settings saved by the doc-site Settings modal ────────────
   function readLangflowSettings() {
     try {
       var raw = localStorage.getItem(LF_KEY);
-      return raw ? JSON.parse(raw) : { url: "", portfolioUrl: "", key: "" };
-    } catch (e) {
-      return { url: "", portfolioUrl: "", key: "" };
-    }
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
   }
 
-  // Build the full Streamlit URL with Langflow creds appended as query params.
+  // ── Build Streamlit URL with credentials as query params ───────────────────
   // pulse_app.py reads ?lf_url, ?lf_key, ?lf_portfolio on startup.
-  function buildAppUrl(base) {
-    var lf = readLangflowSettings();
+  function buildUrl(lf) {
     var params = [];
-    if (lf.url)          params.push("lf_url="       + encodeURIComponent(lf.url));
-    if (lf.key)          params.push("lf_key="        + encodeURIComponent(lf.key));
-    if (lf.portfolioUrl) params.push("lf_portfolio="  + encodeURIComponent(lf.portfolioUrl));
-    return params.length ? base + "?" + params.join("&") : base;
+    if (lf.url)          params.push("lf_url="      + encodeURIComponent(lf.url));
+    if (lf.key)          params.push("lf_key="       + encodeURIComponent(lf.key));
+    if (lf.portfolioUrl) params.push("lf_portfolio=" + encodeURIComponent(lf.portfolioUrl));
+    return params.length ? STREAMLIT_URL + "?" + params.join("&") : STREAMLIT_URL;
   }
 
-  function addDisconnectBtn() {
-    if (document.getElementById("btn-disconnect")) return;
-    var btn = document.createElement("button");
-    btn.id = "btn-disconnect";
-    btn.className = "btn-disconnect";
-    btn.textContent = "Disconnect";
-    btn.addEventListener("click", function () {
-      localStorage.removeItem(APP_URL_KEY);
-      btn.remove();
-      setDisconnected(null);
-    });
-    barRight.insertBefore(btn, barRight.firstChild);
-  }
-
-  function setConnected(baseUrl) {
-    var fullUrl = buildAppUrl(baseUrl);
-    dot.classList.add("connected");
-    var lf = readLangflowSettings();
-    var hasLf = !!(lf.url || lf.key || lf.portfolioUrl);
-    label.textContent = (hasLf ? "connected · Langflow configured" : "connected · no Langflow");
-    launcher.style.display = "none";
+  function showApp(lf) {
+    dot.classList.add("live");
+    label.textContent = "live · Langflow configured";
+    loadingScreen.classList.remove("visible");
+    setupScreen.classList.remove("visible");
     frameWrap.classList.add("visible");
-    errBanner.classList.remove("visible");
-    appFrame.src = fullUrl;
-    localStorage.setItem(APP_URL_KEY, baseUrl);
-    addDisconnectBtn();
+    appFrame.src = buildUrl(lf);
   }
 
-  function setDisconnected(msg) {
-    dot.classList.remove("connected");
-    label.textContent = "not connected";
-    launcher.style.display = "";
+  function showSetup() {
+    dot.classList.add("warn");
+    label.textContent = "Langflow not configured";
+    loadingScreen.classList.remove("visible");
     frameWrap.classList.remove("visible");
-    appFrame.src = "about:blank";
-    if (msg) {
-      errBanner.textContent = msg;
-      errBanner.classList.add("visible");
+    setupScreen.classList.add("visible");
+  }
+
+  function showAppNoLangflow() {
+    // Langflow not configured — load app anyway in shell-only mode
+    dot.classList.remove("live");
+    dot.classList.add("warn");
+    label.textContent = "no Langflow — shell only";
+    loadingScreen.classList.remove("visible");
+    setupScreen.classList.remove("visible");
+    frameWrap.classList.add("visible");
+    appFrame.src = STREAMLIT_URL;
+  }
+
+  // ── Main logic ─────────────────────────────────────────────────────────────
+  function init() {
+    var lf = readLangflowSettings();
+    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
+
+    if (hasLf) {
+      loadingLabel.textContent = "Connecting to Pulse AI\u2026";
+      showApp(lf);
     } else {
-      errBanner.classList.remove("visible");
+      // No Langflow configured — show the setup prompt
+      showSetup();
     }
   }
 
-  function tryConnect(baseUrl) {
-    btnConn.disabled = true;
-    btnConn.textContent = "Connecting\u2026";
-    fetch(baseUrl, { mode: "no-cors", cache: "no-store" })
-      .then(function ()  { setConnected(baseUrl); })
-      .catch(function () { setDisconnected("Could not reach " + baseUrl + " \u2014 make sure Streamlit is running (step 2 above)."); })
-      .finally(function () { btnConn.disabled = false; btnConn.textContent = "Connect"; });
-  }
+  // Small delay so loading spinner is visible briefly (feels intentional)
+  setTimeout(init, 300);
 
-  btnConn.addEventListener("click", function () {
-    var raw = urlInput.value.trim();
-    if (!raw) return;
-    tryConnect(raw.startsWith("http") ? raw : "http://" + raw);
+  // Re-check when user returns from the settings page
+  window.addEventListener("focus", function () {
+    var lf = readLangflowSettings();
+    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
+    if (hasLf && !frameWrap.classList.contains("visible")) {
+      showApp(lf);
+    }
   });
-
-  urlInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") btnConn.click();
-  });
-
-  // Auto-reconnect if a URL was saved from a previous visit
-  if (savedUrl) {
-    fetch(savedUrl, { mode: "no-cors", cache: "no-store" })
-      .then(function ()  { setConnected(savedUrl); })
-      .catch(function () { /* Streamlit not running — stay on launcher silently */ });
-  }
 })();
 </script>
 
