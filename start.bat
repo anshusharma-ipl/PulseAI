@@ -43,18 +43,18 @@ if errorlevel 1 (
 :: Set ngrok auth token
 echo [1/5] Configuring ngrok auth token...
 ngrok config add-authtoken %NGROK_TOKEN% >nul 2>&1
-
-:: Start Langflow in background
-echo [2/5] Starting Langflow on port %LF_PORT%...
-start "Langflow" /min cmd /c "python -m langflow run --port %LF_PORT%"
-
-:: Wait for Langflow to be ready
-echo      Waiting for Langflow to start...
+:: Langflow Desktop — must be started manually before running this script
+echo [2/5] Checking Langflow Desktop is running on port %LF_PORT%...
+echo      Make sure Langflow Desktop is open before continuing.
 :wait_lf
 timeout /t 2 /nobreak >nul
 curl -s http://localhost:%LF_PORT%/health >nul 2>&1
-if errorlevel 1 goto wait_lf
+if errorlevel 1 (
+    echo      Langflow not detected yet — waiting...
+    goto wait_lf
+)
 echo      Langflow is ready.
+
 
 :: Start ngrok tunnel for Langflow
 echo [3/5] Opening ngrok tunnel...
