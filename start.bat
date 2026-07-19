@@ -82,7 +82,7 @@ echo [6/6] Writing URL updater page and starting docs site...
 start "DocsServer" /min cmd /c "python -m http.server 5500"
 
 set UPDATER=%TEMP%\pulse_update_urls.html
-python -c "open(r'%UPDATER%','w').write('<html><head><meta charset=UTF-8><title>Pulse AI</title></head><body><script>var s=JSON.parse(localStorage.getItem(\"pulseai.langflow.settings.v1\")||\"{}}\");s.url=\"%LF_URL%\";s.portfolioUrl=\"%LF_PORTFOLIO_URL%\";s.key=s.key||\"\" ;s.streamlitUrl=\"%NGROK_ST_URL%\";localStorage.setItem(\"pulseai.langflow.settings.v1\",JSON.stringify(s));setTimeout(function(){window.location.href=\"http://localhost:5500/pages/product-briefing.html\";},1500);</script><p style=\"font-family:sans-serif;padding:40px\">Updating connection settings, redirecting to Pulse AI...</p></body></html>')"
+python -c "open(r'%UPDATER%','w').write('<html><head><meta charset=UTF-8><title>Pulse AI</title></head><body><script>var s=JSON.parse(localStorage.getItem(\"pulseai.langflow.settings.v1\")||\"{}}\");s.url=\"%LF_URL%\";s.portfolioUrl=\"%LF_PORTFOLIO_URL%\";s.key=s.key||\"\" ;s.streamlitUrl=\"%NGROK_ST_URL%\";localStorage.setItem(\"pulseai.langflow.settings.v1\",JSON.stringify(s));setTimeout(function(){window.location.href=\"http://localhost:5500\";},1500);</script><p style=\"font-family:sans-serif;padding:40px\">Updating connection settings, redirecting to Pulse AI...</p></body></html>')"
 
 if not exist "%UPDATER%" (
     echo [ERROR] Failed to write updater page.

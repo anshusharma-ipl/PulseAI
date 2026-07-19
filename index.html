@@ -2,10 +2,163 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta http-equiv="refresh" content="0; url=pages/product-briefing.html" />
-<title>Pulse AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>Pulse AI — Customer Health Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
-<p>Redirecting… <a href="pages/product-briefing.html">click here if not redirected</a></p>
+<body class="no-sidebar demo-shell">
+
+<!-- ── Top bar ── -->
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="page-header-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M2 13h4l2 7 4-16 2 9h8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-text">Pulse AI</span>
+    </div>
+    <div class="header-actions">
+      <button class="gear-btn" data-briefing-open type="button" aria-label="View product briefing">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Product Briefing
+      </button>
+      <button class="gear-btn" data-settings-open type="button" aria-label="Connect Langflow">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><circle cx="12" cy="12" r="3" stroke-width="1.6" stroke="currentColor"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z" stroke-width="1.3" stroke="currentColor"/></svg>
+        Connect
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── Streamlit iframe (fills viewport below header) ── -->
+<div class="demo-iframe-wrap">
+  <div class="demo-iframe-loader" id="iframe-loader">
+    <div class="dot-pulse-row">
+      <div class="dot-pulse"></div>
+      <div class="dot-pulse"></div>
+      <div class="dot-pulse"></div>
+    </div>
+    <p class="step-label" id="loader-label">Loading Pulse AI&hellip;</p>
+    <p class="loader-hint" id="loader-hint">Connecting to your Langflow instance.</p>
+  </div>
+  <iframe id="pulse-frame" class="demo-iframe" title="Pulse AI Dashboard" allow="clipboard-write" src="about:blank"></iframe>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PRODUCT BRIEFING OVERLAY MODAL
+     ════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay briefing-overlay" id="briefing-overlay" role="dialog" aria-modal="true" aria-labelledby="briefing-title">
+  <div class="briefing-modal">
+
+    <div class="briefing-modal-head">
+      <div>
+        <p class="doc-kicker" style="margin:0 0 4px;">Product Briefing</p>
+        <h2 id="briefing-title">Pulse AI &mdash; Customer Health Intelligence</h2>
+      </div>
+      <button class="modal-close" data-briefing-close aria-label="Close briefing">&times;</button>
+    </div>
+
+    <div class="briefing-modal-body">
+
+      <div class="doc-title-block">
+        <div class="dt-title">Pulse AI - Product Idea Briefing</div>
+        <div class="dt-sub">Customer Health Intelligence</div>
+      </div>
+
+      <h2 id="the-problem">1. The Problem</h2>
+      <p>Enterprise B2B SaaS companies spend 3&ndash;9 months winning a customer, sign multi-year contracts worth hundreds of thousands of dollars, then lose them because nobody noticed the warning signs in time. The data was always there. The problem is that it lived in different places, and there is a lack of a unified, intelligent system that can interpret fragmented signals and tell what to do before it is too late.</p>
+
+      <h3>Customer Pain-points</h3>
+      <ul>
+        <li><p><strong>Limited visibility into customer risk</strong>.<br />
+        Strategic accounts often show signs of churning too late, leaving teams with little opportunity to intervene before revenue is lost.</p></li>
+        <li><p><strong>Customer data is fragmented across multiple systems.</strong><br />
+        Critical insights are spread across CRM, product analytics, support, billing, and monitoring tools, making it difficult to build a complete view of customer health.</p></li>
+        <li><p><strong>Customer Success teams spend too much time on manual analysis.</strong><br />
+        CSMs invest hours each week consolidating data and creating reports instead of engaging customers and driving successful outcomes.</p></li>
+        <li><p><strong>Insights lack context and actionable guidance.</strong><br />
+        Traditional health scores indicate that an account is at risk but fail to explain the underlying causes or recommend the next best actions.</p></li>
+        <li><p><strong>Business impact is disconnected from product and engineering priorities</strong>.<br />
+        Teams struggle to understand which issues have the greatest effect on customer satisfaction, retention, and revenue, resulting in suboptimal prioritization.</p></li>
+        <li><p><strong>Leadership relies on outdated and reactive reporting.</strong><br />
+        Customer health, renewal forecasts, and portfolio reviews are often based on manual reports and subjective updates, limiting the ability to make timely, data-driven decisions.</p></li>
+      </ul>
+
+      <blockquote>NET EFFECT: Enterprise SaaS companies lose accounts they could have saved, not because they lacked data, but because no system brought it together into a clear, timely, and explained signal that told the right person what to do.</blockquote>
+
+      <h2 id="the-solution">2. The Solution - Pulse AI: Customer Health Intelligence</h2>
+      <p>PulseAI pulls signals from every system that touches a customer, CRM, supports tickets, product usage, and billing, and turns them into clear, actionable intelligence using Generative AI.</p>
+      <p>PulseAI is a tool that sits on top of the systems a company already uses - CRM, product analytics, support tickets, and billing and turns the fragments living inside each one into a single, explained view of account health.</p>
+      <p>Every signal PulseAI produces is grounded in the data it came from, so nothing is a guess. Instead of a red, yellow, or green score with no context, PulseAI answers the two questions people ask: what is happening with this account, and why.</p>
+      <p>It is built for enterprise B2B SaaS companies with a dedicated Customer Success function managing high-value, multi-year accounts where losing a single account can impact huge revenue.</p>
+
+      <h2 id="value-proposition">3. Value Proposition</h2>
+      <p>Pulse AI transforms fragmented customer data into actionable AI-driven intelligence, enabling organizations to proactively reduce churn, improve retention, and accelerate revenue growth. By unifying customer signals across support, CRM, product usage, and engagement, Pulse AI identifies risks, uncovers growth opportunities, prioritizes high-impact actions, and delivers executive-ready insights, empowering every customer-facing team to make faster, data-driven decisions with confidence.</p>
+
+      <h2 id="summary">4. Summary</h2>
+      <p>PulseAI is a Generative AI tool that gives every person on a B2B SaaS go-to-market team a single, cited, plain-English view of every customer account and provides recommended actions. It replaces hours of manual cross-tool report-pulling with a two-minute AI summary, and eliminates the &ldquo;red account, no context&rdquo; problem. It protects millions of dollars in Annual Recurring Revenue by getting the right signal to the right person before the customer evaluates a competitor.</p>
+
+    </div><!-- /.briefing-modal-body -->
+
+    <div class="briefing-modal-foot">
+      <button class="btn" data-briefing-close type="button">Close</button>
+    </div>
+
+  </div><!-- /.briefing-modal -->
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LANGFLOW SETTINGS MODAL
+     ════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="settings-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>Connect Langflow</h2>
+        <p>Point the live demo at your Langflow instance. Run <code>start.bat</code> to fill these automatically.</p>
+      </div>
+      <button class="modal-close" data-settings-close aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <ol class="setup-steps">
+        <li>Run <strong>start.bat</strong> — it tunnels both Langflow and Streamlit via ngrok and fills all fields automatically.</li>
+        <li>Or manually enter your ngrok public URLs and API key below.</li>
+        <li>Values are stored only in your browser&rsquo;s local storage &mdash; never sent anywhere.</li>
+      </ol>
+      <div class="field-row">
+        <div class="field">
+          <label for="set-lf-url">Account-summary run URL</label>
+          <input id="set-lf-url" type="text" placeholder="https://xxxx.ngrok-free.app/api/v1/run/&lt;flow-id&gt;" />
+        </div>
+        <div class="field">
+          <label for="set-lf-portfolio-url">Portfolio run URL</label>
+          <input id="set-lf-portfolio-url" type="text" placeholder="https://xxxx.ngrok-free.app/api/v1/run/&lt;flow-id&gt;" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="set-lf-key">Langflow API key
+            <span class="field-hint">Stored only in this browser&rsquo;s local storage.</span>
+          </label>
+          <input id="set-lf-key" type="password" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="set-st-url">Streamlit URL
+            <span class="field-hint">ngrok public URL for port 8501 — filled automatically by start.bat.</span>
+          </label>
+          <input id="set-st-url" type="text" placeholder="https://yyyy.ngrok-free.app" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" id="settings-save" type="button">Save &amp; reload demo</button>
+      <button class="btn" id="settings-clear" type="button">Clear</button>
+      <span class="settings-status" id="settings-modal-status"></span>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/site.js"></script>
 </body>
 </html>

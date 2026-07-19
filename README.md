@@ -10,7 +10,7 @@ Pulse AI turns fragmented customer data (CRM, support tickets, usage analytics, 
 
 | What | URL |
 |---|---|
-| **Docs / demo site** | https://anshusharma-ipl.github.io/PulseAI/ |
+| **Docs / demo site** | https://anshusharma-ipl.github.io/PulseAI |
 
 > The Streamlit app runs **locally** and is tunnelled to the doc site via ngrok. There is no permanently hosted Streamlit URL — `start.bat` handles everything automatically.
 
@@ -62,7 +62,7 @@ Your PC
                                                       │  iframe src
                               ┌───────────────────────┘
                     GitHub Pages  (or localhost:5500)
-                    pages/product-briefing.html
+                    index.html  ←  https://anshusharma-ipl.github.io/PulseAI
                     ← localStorage: { streamlitUrl, lf_url, lf_key, lf_portfolio }
 ```
 
@@ -126,16 +126,13 @@ PulseAI/
 ├── .gitignore
 ├── .streamlit/
 │   └── config.toml             ← enableCORS=false, headless=true
-├── index.html                  ← redirects to pages/product-briefing.html
+├── index.html                  ← main page: full-viewport Streamlit iframe + modals
 ├── app/
-│   ├── pulse_app.py            ← Streamlit dashboard (v3.0)
-│   └── stlite-runtime.html     ← legacy redirect page (kept for reference)
+│   └── pulse_app.py            ← Streamlit dashboard (v3.0)
 ├── assets/
 │   ├── css/style.css           ← doc site + demo-shell iframe styles
 │   └── js/site.js              ← localStorage, iframe loader, settings modal
-└── pages/
-    ├── product-briefing.html   ← main page: full-viewport Streamlit iframe
-    └── press-release.html      ← Working Backwards press release
+└── pages/                      ← (empty — all pages consolidated to root)
 ```
 
 ---
