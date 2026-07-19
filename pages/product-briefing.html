@@ -3,133 +3,119 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-<title>Product idea briefing — Pulse AI</title>
+<title>Pulse AI — Product Briefing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
-<body>
+<body class="no-sidebar">
 
-<div class="mobile-topbar">
-  <span class="brand-text">Pulse AI</span>
-  <button class="sidebar-toggle" data-sidebar-toggle aria-label="Open navigation">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </button>
-</div>
-
-<div class="shell">
-
-  <aside class="sidebar">
-    <div class="sidebar-brand">
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="page-header-brand">
       <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M2 13h4l2 7 4-16 2 9h8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><span class="brand-text">Pulse AI</span><span class="brand-sub">Board briefing</span></div>
+      <span class="brand-text">Pulse AI</span>
     </div>
-    <nav class="sidebar-nav">
-      <span class="nav-label">Documents</span>
-      <a href="../index.html"><span class="tab-num">00</span> Overview</a>
-      <a href="product-briefing.html" class="active"><span class="tab-num">01</span> Product Briefing</a>
-      <a href="press-release.html"><span class="tab-num">02</span> Press Release</a>
-      <a href="../app/stlite-runtime.html" target="_blank" rel="noopener"><span class="tab-num">03</span> Live Demo <span class="ext-ico">↗</span></a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="settings-btn" data-settings-open type="button">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke-width="1.6"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z" stroke-width="1.3"/></svg>
-        Connect Langflow
-      </button>
-    </div>
-  </aside>
+    <button class="gear-btn" data-settings-open type="button" aria-label="Connect Langflow">
+      <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="3" stroke-width="1.6"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.6a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1Z" stroke-width="1.3"/></svg>
+      Connect Langflow
+    </button>
+  </div>
+</header>
 
-  <main class="content">
-    <div class="content-wrap doc-page">
+<main class="page-main">
+  <div class="briefing-wrap">
 
-      <div class="doc-cover">
-        <p class="doc-kicker">01 · Product idea briefing</p>
-        <h1>Pulse AI — Customer Health Intelligence</h1>
-        <p class="doc-meta">Source: <code>PulseAI_Product_Idea_Briefing.docx</code> · mirrored as-is, unedited</p>
-      </div>
-
-      <div class="doc-toc">
-        <p class="toc-label">In this document</p>
-        <ol>
-          <li><a href="#the-problem">1. The Problem</a></li>
-          <li><a href="#the-solution">2. The Solution — Pulse AI: Customer Health Intelligence</a></li>
-          <li><a href="#value-proposition">3. Value Proposition</a></li>
-          <li><a href="#summary">4. Summary</a></li>
-        </ol>
-      </div>
-
-      <div class="doc-body">
-
-        <div class="doc-title-block">
-          <div class="dt-title">Pulse AI - Product Idea Briefing</div>
-          <div class="dt-sub">Customer Health Intelligence</div>
-        </div>
-
-        <h2 id="the-problem">1. The Problem</h2>
-        <p>Enterprise B2B SaaS companies spend 3–9 months winning a customer, sign multi-year contracts worth hundreds of thousands of dollars, then lose them because nobody noticed the warning signs in time. The data was always there. The problem is that it lived in different places, and there is a lack of a unified, intelligent system that can interpret fragmented signals and tell what to do before it is too late.</p>
-
-        <h3>Customer Pain-points</h3>
-        <ul>
-          <li><p><strong>Limited visibility into customer risk</strong>.<br />
-          Strategic accounts often show signs of churning too late, leaving teams with little opportunity to intervene before revenue is lost.</p></li>
-          <li><p><strong>Customer data is fragmented across multiple systems.</strong><br />
-          Critical insights are spread across CRM, product analytics, support, billing, and monitoring tools, making it difficult to build a complete view of customer health.</p></li>
-          <li><p><strong>Customer Success teams spend too much time on manual analysis.</strong><br />
-          CSMs invest hours each week consolidating data and creating reports instead of engaging customers and driving successful outcomes.</p></li>
-          <li><p><strong>Insights lack context and actionable guidance.</strong><br />
-          Traditional health scores indicate that an account is at risk but fail to explain the underlying causes or recommend the next best actions.</p></li>
-          <li><p><strong>Business impact is disconnected from product and engineering priorities</strong>.<br />
-          Teams struggle to understand which issues have the greatest effect on customer satisfaction, retention, and revenue, resulting in suboptimal prioritization.</p></li>
-          <li><p><strong>Leadership relies on outdated and reactive reporting.</strong><br />
-          Customer health, renewal forecasts, and portfolio reviews are often based on manual reports and subjective updates, limiting the ability to make timely, data-driven decisions.</p></li>
-        </ul>
-
-        <blockquote>NET EFFECT: Enterprise SaaS companies lose accounts they could have saved, not because they lacked data, but because no system brought it together into a clear, timely, and explained signal that told the right person what to do.</blockquote>
-
-        <h2 id="the-solution">2. The Solution - Pulse AI: Customer Health Intelligence</h2>
-        <p>PulseAI pulls signals from every system that touches a customer, CRM, supports tickets, product usage, and billing, and turns them into clear, actionable intelligence using Generative AI.</p>
-        <p>PulseAI is a tool that sits on top of the systems a company already uses - CRM, product analytics, support tickets, and billing and turns the fragments living inside each one into a single, explained view of account health.</p>
-        <p>Every signal PulseAI produces is grounded in the data it came from, so nothing is a guess. Instead of a red, yellow, or green score with no context, PulseAI answers the two questions people ask: what is happening with this account, and why.</p>
-        <p>It is built for enterprise B2B SaaS companies with a dedicated Customer Success function managing high-value, multi-year accounts where losing a single account can impact huge revenue.</p>
-
-        <h2 id="value-proposition">3. Value Proposition</h2>
-        <p>Pulse AI transforms fragmented customer data into actionable AI-driven intelligence, enabling organizations to proactively reduce churn, improve retention, and accelerate revenue growth. By unifying customer signals across support, CRM, product usage, and engagement, Pulse AI identifies risks, uncovers growth opportunities, prioritizes high-impact actions, and delivers executive-ready insights, empowering every customer-facing team to make faster, data-driven decisions with confidence.</p>
-
-        <table>
-          <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 75%" />
-          </colgroup>
-          <thead>
-            <tr><th>Stakeholder</th><th>Value Delivered</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Customer Success Manager</td><td>Identify at-risk customers early, understand the root causes, and take the right actions before issues impact renewals.</td></tr>
-            <tr><td>VP of Customer Success</td><td>Gain a unified view of portfolio health, improve renewal forecasting, and make strategic decisions that maximize customer retention.</td></tr>
-            <tr><td>Product Manager</td><td>Prioritize roadmap investments by understanding how product adoption, feature usage, and customer feedback impact customer health and revenue.</td></tr>
-            <tr><td>Engineering Lead</td><td>Focus engineering effort on the issues that have the greatest impact on customer experience, retention, and business outcomes.</td></tr>
-            <tr><td>Sales / Account Manager</td><td>Discover expansion-ready customers through AI-driven insights, enabling timely upsell and cross-sell opportunities.</td></tr>
-          </tbody>
-        </table>
-
-        <h2 id="summary">4. Summary</h2>
-        <p>PulseAI is a Generative AI tool that gives every person on a B2B SaaS go-to-market team a single, cited, plain-English view of every customer account and provides recommended actions. It replaces hours of manual cross-tool report-pulling with a two-minute AI summary, and eliminates the "red account, no context" problem. It protects millions of dollars in Annual Recurring Revenue by getting the right signal to the right person before the customer evaluates a competitor.</p>
-
-      </div>
-
-      <div class="source-note">
-        <span class="tag">Source</span>
-        <span>Converted from <code>PulseAI_Product_Idea_Briefing.docx</code> with no wording changes. Formatting (headings, bold, table) is preserved from the original document.</span>
-      </div>
+    <div class="doc-cover">
+      <p class="doc-kicker">Product Briefing</p>
+      <h1>Pulse AI &mdash; Customer Health Intelligence</h1>
+      <p class="doc-meta">Source: <code>PulseAI_Product_Idea_Briefing.docx</code> &middot; mirrored as-is, unedited</p>
     </div>
 
-    <footer class="page-footer">
-      <div class="content-wrap">Pulse AI — internal documentation index. Content is mirrored as-is from source documents.</div>
-    </footer>
-  </main>
+    <div class="doc-toc">
+      <p class="toc-label">In this document</p>
+      <ol>
+        <li><a href="#the-problem">1. The Problem</a></li>
+        <li><a href="#the-solution">2. The Solution &mdash; Pulse AI: Customer Health Intelligence</a></li>
+        <li><a href="#value-proposition">3. Value Proposition</a></li>
+        <li><a href="#summary">4. Summary</a></li>
+      </ol>
+    </div>
 
-</div>
+    <div class="doc-body">
+
+      <div class="doc-title-block">
+        <div class="dt-title">Pulse AI - Product Idea Briefing</div>
+        <div class="dt-sub">Customer Health Intelligence</div>
+      </div>
+
+      <h2 id="the-problem">1. The Problem</h2>
+      <p>Enterprise B2B SaaS companies spend 3&ndash;9 months winning a customer, sign multi-year contracts worth hundreds of thousands of dollars, then lose them because nobody noticed the warning signs in time. The data was always there. The problem is that it lived in different places, and there is a lack of a unified, intelligent system that can interpret fragmented signals and tell what to do before it is too late.</p>
+
+      <h3>Customer Pain-points</h3>
+      <ul>
+        <li><p><strong>Limited visibility into customer risk</strong>.<br />
+        Strategic accounts often show signs of churning too late, leaving teams with little opportunity to intervene before revenue is lost.</p></li>
+        <li><p><strong>Customer data is fragmented across multiple systems.</strong><br />
+        Critical insights are spread across CRM, product analytics, support, billing, and monitoring tools, making it difficult to build a complete view of customer health.</p></li>
+        <li><p><strong>Customer Success teams spend too much time on manual analysis.</strong><br />
+        CSMs invest hours each week consolidating data and creating reports instead of engaging customers and driving successful outcomes.</p></li>
+        <li><p><strong>Insights lack context and actionable guidance.</strong><br />
+        Traditional health scores indicate that an account is at risk but fail to explain the underlying causes or recommend the next best actions.</p></li>
+        <li><p><strong>Business impact is disconnected from product and engineering priorities</strong>.<br />
+        Teams struggle to understand which issues have the greatest effect on customer satisfaction, retention, and revenue, resulting in suboptimal prioritization.</p></li>
+        <li><p><strong>Leadership relies on outdated and reactive reporting.</strong><br />
+        Customer health, renewal forecasts, and portfolio reviews are often based on manual reports and subjective updates, limiting the ability to make timely, data-driven decisions.</p></li>
+      </ul>
+
+      <blockquote>NET EFFECT: Enterprise SaaS companies lose accounts they could have saved, not because they lacked data, but because no system brought it together into a clear, timely, and explained signal that told the right person what to do.</blockquote>
+
+      <h2 id="the-solution">2. The Solution - Pulse AI: Customer Health Intelligence</h2>
+      <p>PulseAI pulls signals from every system that touches a customer, CRM, supports tickets, product usage, and billing, and turns them into clear, actionable intelligence using Generative AI.</p>
+      <p>PulseAI is a tool that sits on top of the systems a company already uses - CRM, product analytics, support tickets, and billing and turns the fragments living inside each one into a single, explained view of account health.</p>
+      <p>Every signal PulseAI produces is grounded in the data it came from, so nothing is a guess. Instead of a red, yellow, or green score with no context, PulseAI answers the two questions people ask: what is happening with this account, and why.</p>
+      <p>It is built for enterprise B2B SaaS companies with a dedicated Customer Success function managing high-value, multi-year accounts where losing a single account can impact huge revenue.</p>
+
+      <h2 id="value-proposition">3. Value Proposition</h2>
+      <p>Pulse AI transforms fragmented customer data into actionable AI-driven intelligence, enabling organizations to proactively reduce churn, improve retention, and accelerate revenue growth. By unifying customer signals across support, CRM, product usage, and engagement, Pulse AI identifies risks, uncovers growth opportunities, prioritizes high-impact actions, and delivers executive-ready insights, empowering every customer-facing team to make faster, data-driven decisions with confidence.</p>
+
+      <table>
+        <colgroup>
+          <col style="width: 25%" />
+          <col style="width: 75%" />
+        </colgroup>
+        <thead>
+          <tr><th>Stakeholder</th><th>Value Delivered</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Customer Success Manager</td><td>Identify at-risk customers early, understand the root causes, and take the right actions before issues impact renewals.</td></tr>
+          <tr><td>VP of Customer Success</td><td>Gain a unified view of portfolio health, improve renewal forecasting, and make strategic decisions that maximize customer retention.</td></tr>
+          <tr><td>Product Manager</td><td>Prioritize roadmap investments by understanding how product adoption, feature usage, and customer feedback impact customer health and revenue.</td></tr>
+          <tr><td>Engineering Lead</td><td>Focus engineering effort on the issues that have the greatest impact on customer experience, retention, and business outcomes.</td></tr>
+          <tr><td>Sales / Account Manager</td><td>Discover expansion-ready customers through AI-driven insights, enabling timely upsell and cross-sell opportunities.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="summary">4. Summary</h2>
+      <p>PulseAI is a Generative AI tool that gives every person on a B2B SaaS go-to-market team a single, cited, plain-English view of every customer account and provides recommended actions. It replaces hours of manual cross-tool report-pulling with a two-minute AI summary, and eliminates the &ldquo;red account, no context&rdquo; problem. It protects millions of dollars in Annual Recurring Revenue by getting the right signal to the right person before the customer evaluates a competitor.</p>
+
+    </div>
+
+    <div class="source-note">
+      <span class="tag">Source</span>
+      <span>Converted from <code>PulseAI_Product_Idea_Briefing.docx</code> with no wording changes. Formatting (headings, bold, table) is preserved from the original document.</span>
+    </div>
+
+    <div class="demo-cta">
+      <a href="../app/stlite-runtime.html" target="_blank" rel="noopener" class="btn-demo">
+        Launch Live Demo &nearr;
+      </a>
+      <p class="demo-hint">Opens the Pulse AI dashboard &mdash; customer health scores, root causes, and next-best actions &mdash; running directly in your browser.</p>
+    </div>
+
+  </div>
+</main>
 
 <div class="modal-overlay" id="settings-overlay">
   <div class="modal">
@@ -142,11 +128,9 @@
     </div>
     <div class="modal-body">
       <ol class="setup-steps">
-        <li>Install and run Langflow locally (or on a server you control): <code>pip install langflow</code> then <code>langflow run</code>.</li>
-        <li>Import the Pulse AI flow(s) and copy each flow's <strong>run URL</strong> — e.g. <code>http://localhost:7860/api/v1/run/&lt;flow-id&gt;</code> — one for the account summary flow, one for the portfolio flow.</li>
-        <li>Copy your Langflow <strong>API key</strong> from Langflow's Settings → API Keys.</li>
-        <li>In your Langflow instance, allow cross-origin requests (CORS) from this page's origin — otherwise your browser will block the calls.</li>
-        <li>Paste all three values below and save. This only changes the app in your browser's memory, for this browser, and is never sent anywhere but your own Langflow server.</li>
+        <li>Open Langflow Desktop and import the Pulse AI flows. Copy each flow's <strong>run URL</strong> &mdash; e.g. <code>http://localhost:7860/api/v1/run/&lt;flow-id&gt;</code>.</li>
+        <li>Copy your Langflow <strong>API key</strong> from Langflow Settings &rarr; API Keys.</li>
+        <li>Paste the values below and save. These are stored only in your browser's local storage &mdash; never sent anywhere.</li>
       </ol>
       <div class="field-row">
         <div class="field">
@@ -161,7 +145,7 @@
       <div class="field-row">
         <div class="field">
           <label for="set-lf-key">Langflow API key
-            <span class="field-hint">Stored only in this browser's local storage — never sent to us.</span>
+            <span class="field-hint">Stored only in this browser's local storage &mdash; never sent to us.</span>
           </label>
           <input id="set-lf-key" type="password" placeholder="sk-..." autocomplete="off" />
         </div>
