@@ -188,39 +188,43 @@
     <div class="modal-head">
       <div>
         <h2>Connect Langflow</h2>
-        <p>Point the live demo at your own Langflow instance so account summaries load for you.</p>
+        <p>Point the live demo at your Langflow instance. Run <code>start.bat</code> to fill these automatically.</p>
       </div>
       <button class="modal-close" data-settings-close aria-label="Close">&times;</button>
     </div>
     <div class="modal-body">
       <ol class="setup-steps">
-        <li>Install and run Langflow locally (or on a server you control): <code>pip install langflow</code> then <code>langflow run</code>.</li>
-        <li>Import the Pulse AI flow(s) and copy each flow's <strong>run URL</strong> — e.g. <code>http://localhost:7860/api/v1/run/&lt;flow-id&gt;</code> — one for the account summary flow, one for the portfolio flow.</li>
-        <li>Copy your Langflow <strong>API key</strong> from Langflow's Settings → API Keys.</li>
-        <li>In your Langflow instance, allow cross-origin requests (CORS) from this page's origin — otherwise your browser will block the calls.</li>
-        <li>Paste all three values below and save. This only changes the app in your browser's memory, for this browser, and is never sent anywhere but your own Langflow server.</li>
+        <li>Run <strong>start.bat</strong> — it tunnels both Langflow and Streamlit via ngrok and fills all fields automatically.</li>
+        <li>Or manually enter your ngrok public URLs and API key below.</li>
+        <li>Values are stored only in your browser&rsquo;s local storage &mdash; never sent anywhere.</li>
       </ol>
       <div class="field-row">
         <div class="field">
           <label for="set-lf-url">Account-summary run URL</label>
-          <input id="set-lf-url" type="text" placeholder="http://localhost:7860/api/v1/run/&lt;flow-id&gt;" />
+          <input id="set-lf-url" type="text" placeholder="https://xxxx.ngrok-free.app/api/v1/run/&lt;flow-id&gt;" />
         </div>
         <div class="field">
           <label for="set-lf-portfolio-url">Portfolio run URL</label>
-          <input id="set-lf-portfolio-url" type="text" placeholder="http://localhost:7860/api/v1/run/&lt;flow-id&gt;" />
+          <input id="set-lf-portfolio-url" type="text" placeholder="https://xxxx.ngrok-free.app/api/v1/run/&lt;flow-id&gt;" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
           <label for="set-lf-key">Langflow API key
-            <span class="field-hint">Stored only in this browser's local storage — never sent to us.</span>
+            <span class="field-hint">Stored only in this browser&rsquo;s local storage.</span>
           </label>
           <input id="set-lf-key" type="password" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="set-st-url">Streamlit URL
+            <span class="field-hint">ngrok public URL for port 8501 — filled automatically by start.bat.</span>
+          </label>
+          <input id="set-st-url" type="text" placeholder="https://yyyy.ngrok-free.app" />
         </div>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn primary" id="settings-save" type="button">Save connection</button>
+      <button class="btn primary" id="settings-save" type="button">Save &amp; reload demo</button>
       <button class="btn" id="settings-clear" type="button">Clear</button>
       <span class="settings-status" id="settings-modal-status"></span>
     </div>
