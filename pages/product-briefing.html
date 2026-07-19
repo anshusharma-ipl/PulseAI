@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
-<body class="no-sidebar demo-shell">
+<body class="no-sidebar">
 
 <!-- ── Top bar ── -->
 <header class="page-header">
@@ -31,20 +31,56 @@
   </div>
 </header>
 
-<!-- ── Streamlit iframe (fills viewport below header) ── -->
-<div class="demo-iframe-wrap">
-  <!-- Loading state shown while iframe boots -->
-  <div class="demo-iframe-loader" id="iframe-loader">
-    <div class="dot-pulse-row">
-      <div class="dot-pulse"></div>
-      <div class="dot-pulse"></div>
-      <div class="dot-pulse"></div>
+<!-- ── Hero launch card ── -->
+<main class="launch-main">
+  <div class="launch-hero">
+
+    <div class="launch-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 13h4l2 7 4-16 2 9h8"/>
+      </svg>
     </div>
-    <p class="step-label" id="loader-label">Loading Pulse AI&hellip;</p>
-    <p class="loader-hint" id="loader-hint">Connecting to your Langflow instance.</p>
-  </div>
-  <iframe id="pulse-frame" class="demo-iframe" title="Pulse AI Dashboard" allow="clipboard-write" src="about:blank"></iframe>
-</div>
+
+    <h1>Pulse AI</h1>
+    <p class="launch-sub">Customer Health Intelligence Dashboard</p>
+    <p class="launch-desc">
+      RAG-powered executive health reports — usage signals, support tickets,
+      CRM notes and contract data synthesised into a single narrative.
+    </p>
+
+    <!-- Primary CTA — JS fills in the href with credentials -->
+    <a id="launch-btn" class="btn primary launch-btn" href="https://pulseai-anshusharma.streamlit.app" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        <polyline points="15 3 21 3 21 9"/>
+        <line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+      Open Live Demo
+    </a>
+
+    <p class="launch-note" id="launch-note">
+      No Langflow credentials saved yet.
+      <button class="link-btn" data-settings-open type="button">Connect Langflow</button>
+      to pass your instance to the app automatically.
+    </p>
+
+    <div class="launch-chips">
+      <span class="chip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20v-4"/></svg>
+        Live telemetry
+      </span>
+      <span class="chip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        20 accounts tracked
+      </span>
+      <span class="chip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>
+        RAG-powered risk signals
+      </span>
+    </div>
+
+  </div><!-- /.launch-hero -->
+</main>
 
 <!-- ════════════════════════════════════════════════════════════
      PRODUCT BRIEFING OVERLAY MODAL
@@ -110,7 +146,7 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════════
-     LANGFLOW SETTINGS MODAL (unchanged)
+     LANGFLOW SETTINGS MODAL
      ════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="settings-overlay">
   <div class="modal">
@@ -147,7 +183,7 @@
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn primary" id="settings-save" type="button">Save &amp; reload demo</button>
+      <button class="btn primary" id="settings-save" type="button">Save &amp; update demo link</button>
       <button class="btn" id="settings-clear" type="button">Clear</button>
       <span class="settings-status" id="settings-modal-status"></span>
     </div>

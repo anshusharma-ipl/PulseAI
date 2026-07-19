@@ -92,26 +92,15 @@
     loadFrame(frame, loader, buildStreamlitUrl(lf));
   }
 
-  // ── Reload iframe with fresh credentials after Save ─────────────────────
-  function reloadIframe() {
-    var frame = document.getElementById("pulse-frame");
-    if (!frame) return;
-    var loader = document.getElementById("iframe-loader");
-    if (loader) {
-      loader.classList.remove("is-hidden");
-      // Restore the spinner markup in case the setup card replaced it
-      loader.innerHTML = [
-        '<div class="dot-pulse-row">',
-        '  <div class="dot-pulse"></div>',
-        '  <div class="dot-pulse"></div>',
-        '  <div class="dot-pulse"></div>',
-        '</div>',
-        '<p class="step-label" id="loader-label">Reloading with new settings\u2026</p>',
-        '<p class="loader-hint" id="loader-hint"></p>'
-      ].join("\n");
-    }
-    frame.classList.remove("is-loaded");
-    loadFrame(frame, loader, buildStreamlitUrl(readSettings()));
+  // ── Update launch button href with fresh credentials ────────────────────
+  function updateLaunchBtn() {
+    var btn  = document.getElementById("launch-btn");
+    var note = document.getElementById("launch-note");
+    if (!btn) return; // not on the launch page
+    var lf    = readSettings();
+    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
+    btn.href = buildStreamlitUrl(lf);
+    if (note) note.classList.toggle("is-hidden", !!hasLf);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -203,8 +192,7 @@
           statusEl.classList.add("ok");
         }
         closeSettings();
-        // Reload the iframe on the same page with fresh credentials
-        reloadIframe();
+        updateLaunchBtn();
         window.dispatchEvent(new CustomEvent("pulse-settings-saved"));
       });
     }
@@ -223,7 +211,7 @@
       });
     }
 
-    // ── Boot the iframe (no-op on pages without one) ──────────────────────
-    initIframe();
+    // ── Initialise launch button (no-op on pages without one) ─────────────
+    updateLaunchBtn();
   });
 })();
