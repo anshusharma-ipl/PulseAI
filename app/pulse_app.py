@@ -80,13 +80,13 @@ ACCOUNT_ID_MAP = {
     "Aperture Science": "ACC-019", "Weyland Analytics": "ACC-020",
 }
 
-ACCOUNTS = [
+ACCOUNTS = sorted([
     "Acme Corp", "Stark Industries", "Cyberdyne Systems", "Aperture Science",
     "Umbrella Health", "Globex Inc", "Wayne Analytics", "Massive Dynamic",
     "Oscorp Data", "Tyrell Systems", "Prestige Global", "Sterling Cooper Analytics",
     "Weyland Analytics", "Soylent Corp", "Wonka Enterprises",
     "Initech Systems", "Hooli Cloud", "Pied Piper", "Dunder Mifflin Digital", "Bluth SaaS",
-]
+])
 
 # ─────────────────────────────────────────────────────────────────────────────
 # DESIGN TOKENS
