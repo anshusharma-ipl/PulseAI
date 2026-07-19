@@ -745,33 +745,3 @@ button { font-family: inherit; }
   .content-wrap { padding: 0 22px; }
   .hero h1 { font-size: 30px; }
 }
-
-/* ---------- product briefing — demo CTA ---------- */
-.demo-cta {
-  margin-top: 40px;
-  padding: 32px 28px;
-  background: var(--navy);
-  border-radius: 10px;
-  text-align: center;
-}
-.btn-demo {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 14px 32px;
-  border-radius: 7px;
-  background: var(--brass-soft);
-  color: var(--navy);
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.01em;
-}
-.btn-demo:hover { background: #D4AC5A; text-decoration: none; color: var(--navy); }
-.demo-hint {
-  margin: 14px auto 0;
-  max-width: 48ch;
-  font-size: 13.5px;
-  color: #7E8CA0;
-  line-height: 1.55;
-}
