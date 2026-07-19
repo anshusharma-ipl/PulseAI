@@ -1,15 +1,19 @@
 @echo off
-title Pulse AI — Shutdown
+title Pulse AI - Shutdown
 echo.
 echo  Stopping all Pulse AI services...
 echo.
 
-taskkill /FI "WINDOWTITLE eq Streamlit*" /F >nul 2>&1
-taskkill /FI "WINDOWTITLE eq ngrok*" /F >nul 2>&1
-taskkill /IM ngrok.exe /F >nul 2>&1
-taskkill /FI "WINDOWTITLE eq Langflow*" /F >nul 2>&1
-taskkill /FI "WINDOWTITLE eq DocsServer*" /F >nul 2>&1
+echo  Killing ngrok tunnels...
+taskkill /f /im ngrok.exe >nul 2>&1
 
-echo  All services stopped.
+echo  Killing Streamlit...
+for /f "tokens=5" %%p in ('netstat -ano ^| findstr ":8501 " ^| findstr LISTENING') do taskkill /f /pid %%p >nul 2>&1
+
+echo  Killing docs server (port 5500)...
+for /f "tokens=5" %%p in ('netstat -ano ^| findstr ":5500 " ^| findstr LISTENING') do taskkill /f /pid %%p >nul 2>&1
+
+echo.
+echo  Done. Langflow Desktop must be closed manually.
 echo.
 pause

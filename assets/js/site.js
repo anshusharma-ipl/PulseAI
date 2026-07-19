@@ -5,34 +5,39 @@
 //   • Credential-aware Streamlit iframe loader (on pages that have #pulse-frame)
 
 (function () {
-  var STORAGE_KEY    = "pulseai.langflow.settings.v1";
-  // Use localhost when running locally, production URL otherwise
-  var STREAMLIT_BASE = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-    ? "http://localhost:8501"
-    : "https://pulseai-anshusharma.streamlit.app";
+  var STORAGE_KEY = "pulseai.langflow.settings.v1";
 
   // ── localStorage helpers ────────────────────────────────────────────────
   function readSettings() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : { url: "", portfolioUrl: "", key: "" };
+      return raw ? JSON.parse(raw) : { url: "", portfolioUrl: "", key: "", streamlitUrl: "" };
     } catch (e) {
-      return { url: "", portfolioUrl: "", key: "" };
+      return { url: "", portfolioUrl: "", key: "", streamlitUrl: "" };
     }
   }
   function writeSettings(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
   function clearSettings()  { localStorage.removeItem(STORAGE_KEY); }
 
-  // Exposed for stlite-runtime.html (legacy) and any inline scripts
+  // Exposed for inline scripts
   window.PulseSettings = { read: readSettings, write: writeSettings, clear: clearSettings };
+
+  // ── Streamlit base URL ───────────────────────────────────────────────────
+  // Priority: streamlitUrl saved by start.bat → localhost fallback
+  function getStreamlitBase() {
+    var lf = readSettings();
+    if (lf && lf.streamlitUrl) return lf.streamlitUrl;
+    return "http://localhost:8501";
+  }
 
   // ── Streamlit URL builder ────────────────────────────────────────────────
   function buildStreamlitUrl(lf) {
+    var base = getStreamlitBase();
     var p = [];
     if (lf && lf.url)          p.push("lf_url="      + encodeURIComponent(lf.url));
     if (lf && lf.key)          p.push("lf_key="       + encodeURIComponent(lf.key));
     if (lf && lf.portfolioUrl) p.push("lf_portfolio=" + encodeURIComponent(lf.portfolioUrl));
-    return p.length ? STREAMLIT_BASE + "?" + p.join("&") : STREAMLIT_BASE;
+    return p.length ? base + "?" + p.join("&") : base;
   }
 
   // ── Iframe loader ────────────────────────────────────────────────────────
@@ -92,15 +97,25 @@
     loadFrame(frame, loader, buildStreamlitUrl(lf));
   }
 
-  // ── Update launch button href with fresh credentials ────────────────────
-  function updateLaunchBtn() {
-    var btn  = document.getElementById("launch-btn");
-    var note = document.getElementById("launch-note");
-    if (!btn) return; // not on the launch page
-    var lf    = readSettings();
-    var hasLf = lf && (lf.url || lf.key || lf.portfolioUrl);
-    btn.href = buildStreamlitUrl(lf);
-    if (note) note.classList.toggle("is-hidden", !!hasLf);
+  // ── Reload iframe with fresh credentials after Save ─────────────────────
+  function reloadIframe() {
+    var frame = document.getElementById("pulse-frame");
+    if (!frame) return;
+    var loader = document.getElementById("iframe-loader");
+    if (loader) {
+      loader.classList.remove("is-hidden");
+      loader.innerHTML = [
+        '<div class="dot-pulse-row">',
+        '  <div class="dot-pulse"></div>',
+        '  <div class="dot-pulse"></div>',
+        '  <div class="dot-pulse"></div>',
+        '</div>',
+        '<p class="step-label" id="loader-label">Reloading with new settings\u2026</p>',
+        '<p class="loader-hint" id="loader-hint"></p>'
+      ].join("\n");
+    }
+    frame.classList.remove("is-loaded");
+    loadFrame(frame, loader, buildStreamlitUrl(readSettings()));
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -145,9 +160,10 @@
 
     var openBtns      = document.querySelectorAll("[data-settings-open]");
     var closeBtns     = settingsOverlay.querySelectorAll("[data-settings-close]");
-    var urlField      = document.getElementById("set-lf-url");
-    var portfolioField= document.getElementById("set-lf-portfolio-url");
-    var keyField      = document.getElementById("set-lf-key");
+    var urlField       = document.getElementById("set-lf-url");
+    var portfolioField = document.getElementById("set-lf-portfolio-url");
+    var keyField       = document.getElementById("set-lf-key");
+    var stField        = document.getElementById("set-st-url");
     var statusEl      = document.getElementById("settings-modal-status");
     var saveBtn       = document.getElementById("settings-save");
     var clearBtn      = document.getElementById("settings-clear");
@@ -157,6 +173,7 @@
       if (urlField)       urlField.value       = s.url          || "";
       if (portfolioField) portfolioField.value = s.portfolioUrl || "";
       if (keyField)       keyField.value       = s.key          || "";
+      if (stField)        stField.value        = s.streamlitUrl || "";
       if (statusEl) {
         statusEl.textContent = (s.url || s.portfolioUrl || s.key)
           ? "Connected to your Langflow instance."
@@ -186,13 +203,14 @@
           url:          (urlField       && urlField.value.trim())       || "",
           portfolioUrl: (portfolioField && portfolioField.value.trim()) || "",
           key:          (keyField       && keyField.value.trim())       || "",
+          streamlitUrl: (stField        && stField.value.trim())        || "",
         });
         if (statusEl) {
           statusEl.textContent = "Saved.";
           statusEl.classList.add("ok");
         }
         closeSettings();
-        updateLaunchBtn();
+        reloadIframe();
         window.dispatchEvent(new CustomEvent("pulse-settings-saved"));
       });
     }
@@ -203,6 +221,7 @@
         if (urlField)       urlField.value       = "";
         if (portfolioField) portfolioField.value = "";
         if (keyField)       keyField.value       = "";
+        if (stField)        stField.value        = "";
         if (statusEl) {
           statusEl.textContent = "Cleared.";
           statusEl.classList.remove("ok");
@@ -211,7 +230,7 @@
       });
     }
 
-    // ── Initialise launch button (no-op on pages without one) ─────────────
-    updateLaunchBtn();
+    // ── Boot the iframe (no-op on pages without one) ──────────────────────
+    initIframe();
   });
 })();
