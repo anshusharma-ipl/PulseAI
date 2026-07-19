@@ -122,8 +122,10 @@
 
 <script>
 (function () {
-  var STREAMLIT_URL = "http://localhost:8501";
-  var LF_KEY        = "pulseai.langflow.settings.v1";
+  var STREAMLIT_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://localhost:8501"
+    : "https://pulseai-anshusharma.streamlit.app";
+  var LF_KEY = "pulseai.langflow.settings.v1";
 
   function readLangflowSettings() {
     try { return JSON.parse(localStorage.getItem(LF_KEY) || "null"); }
