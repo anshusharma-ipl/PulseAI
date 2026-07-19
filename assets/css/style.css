@@ -838,3 +838,223 @@ body.no-sidebar { background: var(--paper); }
   .briefing-wrap { padding: 0 18px; }
   .gear-btn span { display: none; }
 }
+
+/* =========================================================================
+   Demo shell — full-page iframe layout with briefing overlay
+   ========================================================================= */
+
+/* Body variant that hosts the iframe directly */
+body.demo-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* Do NOT set overflow:hidden on body — it breaks position:fixed modals in
+     most browsers. Clip the iframe container instead (see .demo-iframe-wrap). */
+}
+body.demo-shell .page-header { flex-shrink: 0; }
+
+/* On the demo shell the header spans full width — no max-width cap */
+body.demo-shell .page-header-inner {
+  max-width: none;
+  padding: 0 20px;
+}
+
+/* Header: allow multiple buttons side-by-side */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Iframe container fills the remaining viewport height */
+.demo-iframe-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #0E1B2E;
+}
+
+/* Full-size iframe */
+.demo-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #0E1B2E;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.demo-iframe.is-loaded { opacity: 1; }
+
+/* Loading overlay inside the iframe wrap */
+.demo-iframe-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #0E1B2E;
+  color: #C9D3DE;
+  z-index: 5;
+  transition: opacity 0.3s ease;
+}
+.demo-iframe-loader.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.demo-iframe-loader .step-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #C9A24B;
+  margin: 0;
+}
+.loader-hint {
+  font-size: 13px;
+  color: #7E8CA0;
+  max-width: 36ch;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── "no Langflow" notice inside the loader ── */
+.loader-setup-card {
+  background: #fff;
+  border: 1px solid #DEE4EA;
+  border-radius: 12px;
+  padding: 28px 32px;
+  text-align: center;
+  max-width: 420px;
+  width: calc(100% - 40px);
+}
+.loader-setup-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0F1B2D;
+  margin: 0 0 8px;
+}
+.loader-setup-card p {
+  font-size: 13.5px;
+  color: #5C7089;
+  margin: 0 0 18px;
+  max-width: 34ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.loader-setup-card .btn { margin: 0 auto; }
+
+/* =========================================================================
+   Briefing overlay modal (wide, scrollable)
+   ========================================================================= */
+.briefing-overlay {
+  /* Sit above the settings modal (z-index:100) */
+  z-index: 110;
+  align-items: flex-start;
+  padding: 0;
+}
+.briefing-overlay.is-open {
+  display: flex;
+  align-items: flex-start;    /* let modal size to its content up to max-height */
+}
+
+.briefing-modal {
+  background: var(--card);
+  width: 100%;
+  max-width: 760px;
+  /* Auto height up to 90vh so content determines size, not the other way */
+  min-height: 200px;
+  max-height: 90vh;
+  margin: 5vh auto 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  /* slide in from top */
+  transform: translateY(-24px);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.briefing-overlay.is-open .briefing-modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.briefing-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px 18px;
+  border-bottom: 2px solid var(--navy);
+  flex-shrink: 0;
+  background: var(--paper);
+}
+.briefing-modal-head h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+
+.briefing-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 28px 24px;
+  font-size: 16px;
+}
+/* Reuse existing .doc-body rules inside the briefing modal body */
+.briefing-modal-body h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 2.4em 0 0.7em;
+  padding-top: 0.6em;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 20px;
+}
+.briefing-modal-body > h2:first-of-type { border-top: none; padding-top: 0; margin-top: 1.2em; }
+.briefing-modal-body h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 1.8em 0 0.6em;
+}
+.briefing-modal-body p { margin: 1em 0; color: #24344A; }
+.briefing-modal-body strong { color: var(--ink); }
+.briefing-modal-body ul, .briefing-modal-body ol { padding-left: 1.3em; }
+.briefing-modal-body li { margin: 0.6em 0; }
+.briefing-modal-body blockquote {
+  border-left: 3px solid var(--brass-soft);
+  margin: 1.8em 0;
+  padding: 0.3em 0 0.3em 1.3em;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-style: italic;
+}
+
+.briefing-modal-foot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+@media (max-width: 640px) {
+  .briefing-modal { max-width: 100%; }
+  .briefing-modal-head,
+  .briefing-modal-body,
+  .briefing-modal-foot { padding-left: 18px; padding-right: 18px; }
+  .loader-setup-card { padding: 22px 20px; }
+  .header-actions .gear-btn span { display: none; }
+}

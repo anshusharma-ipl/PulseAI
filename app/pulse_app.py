@@ -224,11 +224,12 @@ def section_header(meta: dict, title: str) -> str:
     )
 
 
-def card_wrap(content: str, border_color: str, bg: str = CARD) -> str:
+def card_wrap(content: str, border_color: str, bg: str = CARD, _full_h: bool = False) -> str:
+    h = 'height:100%;box-sizing:border-box;display:flex;flex-direction:column;' if _full_h else ''
     return (
         '<div style="background:' + bg + ';border:1px solid ' + LINE + ';'
         'border-left:4px solid ' + border_color + ';border-radius:12px;'
-        'padding:20px 22px;margin-bottom:16px;">'
+        'padding:20px 22px;margin-bottom:16px;' + h + '">'
         + content + '</div>'
     )
 
@@ -980,9 +981,17 @@ html, body, [class*="css"] {{
    card's own margin-bottom, which is what produced the big empty band
    between cards. Zero that out in the main content area only (not the
    sidebar, where native widgets rely on default spacing) so card_wrap's
-   margin is the single source of vertical rhythm. */
+   margin is the single source of vertical rhythm.
+   Also collapse the bottom margin Streamlit injects on every stMarkdown
+   wrapper — that is what produces the blank band below the donut card. */
 .main [data-testid="stVerticalBlock"],
-[data-testid="stMain"] [data-testid="stVerticalBlock"] {{ gap:0 !important; }}
+[data-testid="stMain"] [data-testid="stVerticalBlock"],
+[data-testid="stExpander"] [data-testid="stVerticalBlock"],
+[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlock"] {{ gap:0 !important; }}
+.main div[data-testid="stMarkdown"],
+[data-testid="stMain"] div[data-testid="stMarkdown"],
+[data-testid="stExpander"] div[data-testid="stMarkdown"],
+[data-testid="stHorizontalBlock"] div[data-testid="stMarkdown"] {{ margin-bottom:0 !important; }}
 
 [data-testid="stSidebar"] {{ background:{INK}; }}
 [data-testid="stSidebar"] * {{ color:#E7ECF1 !important; }}
@@ -1012,14 +1021,43 @@ div.stButton > button:hover, div.stDownloadButton > button:hover {{
 div.stButton > button:disabled {{
   background:#C7CFD8;border-color:#C7CFD8;color:#FFF;cursor:not-allowed; }}
 
+/* ── Refresh button styling ── */
 div[class*="st-key-refresh_portfolio_btn"] button {{
   width:auto !important;background:{CARD} !important;color:{INK_SOFT} !important;
   border:1px solid {LINE} !important;font-weight:600;font-size:0.85rem;
   padding:0.4rem 0.85rem;border-radius:8px;white-space:nowrap; }}
 div[class*="st-key-refresh_portfolio_btn"] button:hover {{
   background:{GREEN_BG} !important;color:{TEAL} !important;border-color:{TEAL} !important; }}
-div[class*="st-key-refresh_portfolio_btn"] {{
-  display:flex !important;justify-content:flex-end; }}
+
+/* The refresh button row sits above the expander in the DOM. Previously
+   this used a negative bottom margin to pull it down on top of the
+   expander's summary bar, which caused the button to visually overlap
+   and collide with the "Portfolio Overview" header text. Instead, keep
+   it in normal flow with a small gap beneath it so it sits as its own
+   right-aligned row just above the expander, never overlapping. */
+[data-testid="stHorizontalBlock"]:has(div[class*="st-key-refresh_portfolio_btn"]) {{
+  margin-bottom:8px !important; }}
+[data-testid="stColumn"]:has(div[class*="st-key-refresh_portfolio_btn"]) {{
+  display:flex !important;justify-content:flex-end !important;align-items:center !important; }}
+
+/* ── Portfolio cards equal height ──
+   Use stretch on the card-columns row so both stMarkdown wrappers grow
+   to the same height; card_wrap's height:100% then fills the border. */
+[data-testid="stHorizontalBlock"] {{ align-items:stretch !important; }}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {{
+  display:flex !important;flex-direction:column !important; }}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > [data-testid="stVerticalBlock"] {{
+  flex:1 !important;display:flex !important;flex-direction:column !important; }}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > [data-testid="stVerticalBlock"] > div[data-testid="stMarkdown"] {{
+  flex:1 !important;display:flex !important;flex-direction:column !important; }}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > [data-testid="stVerticalBlock"] > div[data-testid="stMarkdown"] > div {{
+  flex:1 !important;height:100% !important; }}
+
+/* ── Hide Streamlit's Deploy / Rerun / kebab toolbar ── */
+[data-testid="stToolbar"] {{ display:none !important; }}
+[data-testid="stDecoration"] {{ display:none !important; }}
+[data-testid="stStatusWidget"] {{ display:none !important; }}
+header[data-testid="stHeader"] {{ display:none !important; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1286,22 +1324,24 @@ st.markdown(
 # ─────────────────────────────────────────────────────────────────────────────
 has_active_report = bool(account) and bool(st.session_state.report_cache.get(account))
 
+# Place the Refresh button ABOVE the expander so it floats in the same
+# visual row as the expander header. CSS positions it over the header bar.
+_refresh_col, _spacer_col = st.columns([1, 8])
+with _refresh_col:
+    if st.button("↻ Refresh", key="refresh_portfolio_btn", use_container_width=False):
+        with st.spinner("Refreshing portfolio…"):
+            fetch_portfolio()
+        st.rerun()
+
 with st.expander("📊 Portfolio Overview", expanded=not has_active_report):
-    head_col, btn_col = st.columns([6, 1])
-    with head_col:
-        subtitle = (
-            "Last updated " + st.session_state.portfolio_loaded_at
-            if st.session_state.portfolio_loaded_at else "Live scoring across all tracked accounts"
-        )
-        st.markdown(
-            '<p style="color:#7C8DA0;font-size:0.82rem;margin:0 0 14px;">' + subtitle + '</p>',
-            unsafe_allow_html=True,
-        )
-    with btn_col:
-        if st.button("&#8635; Refresh", key="refresh_portfolio_btn"):
-            with st.spinner("Refreshing portfolio…"):
-                fetch_portfolio()
-            st.rerun()
+    subtitle = (
+        "Last updated " + st.session_state.portfolio_loaded_at
+        if st.session_state.portfolio_loaded_at else "Live scoring across all tracked accounts"
+    )
+    st.markdown(
+        '<p style="color:#7C8DA0;font-size:0.82rem;margin:0 0 12px;">' + subtitle + '</p>',
+        unsafe_allow_html=True,
+    )
 
     if st.session_state.portfolio_error:
         st.markdown(
@@ -1347,7 +1387,7 @@ with st.expander("📊 Portfolio Overview", expanded=not has_active_report):
                     + str(counts.get(label, 0)) + '</span></div>'
                 )
             return (
-                '<div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:center;">'
+                '<div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:center;flex:1;">'
                 '<div style="position:relative;width:' + str(size) + 'px;height:' + str(size) + 'px;flex-shrink:0;">'
                 '<svg width="' + str(size) + '" height="' + str(size) + '" viewBox="0 0 ' + str(size) + ' ' + str(size) + '">'
                 + segments + '</svg>'
@@ -1359,6 +1399,29 @@ with st.expander("📊 Portfolio Overview", expanded=not has_active_report):
                 'text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Accounts</span>'
                 '</div></div>'
                 '<div style="flex:1;min-width:170px;">' + legend + '</div></div>'
+            )
+
+        def health_breakdown(counts: dict) -> str:
+            total = sum(counts.values()) or 1
+            healthy_pct = round(counts.get("Healthy", 0) / total * 100)
+            signals = [
+                ("Usage", TEAL), ("Support", AMBER),
+                ("Billing", BLUE), ("Engagement", CORAL),
+            ]
+            dots = "".join(
+                '<div style="display:flex;align-items:center;gap:6px;">'
+                '<span style="width:7px;height:7px;border-radius:50%;background:' + color + ';flex-shrink:0;"></span>'
+                '<span style="font-size:0.78rem;color:' + INK_SOFT + ';">' + label + '</span></div>'
+                for label, color in signals
+            )
+            return (
+                '<div style="border-top:1px solid ' + LINE + ';margin-top:16px;padding-top:14px;">'
+                '<p style="font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;'
+                'color:' + INK_SOFT + ';margin:0 0 10px;">Signal breakdown</p>'
+                '<div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;">' + dots + '</div>'
+                '<p style="font-size:0.82rem;color:' + INK_SOFT + ';margin:0;">'
+                + str(healthy_pct) + '% of tracked accounts are currently healthy across usage, '
+                'support, billing, and engagement signals.</p></div>'
             )
 
         def attention_row(rank: int, name: str, score, status: str) -> str:
@@ -1378,19 +1441,36 @@ with st.expander("📊 Portfolio Overview", expanded=not has_active_report):
         with col_a:
             st.markdown(card_wrap(
                 section_header(SECTION_META["portfolio_health"], "Portfolio Health")
-                + donut_chart(counts), INK_SOFT
+                + donut_chart(counts) + health_breakdown(counts), INK_SOFT, _full_h=True
             ), unsafe_allow_html=True)
         with col_b:
             rows = "".join(attention_row(i + 1, r["account_name"], r["score"], r["status"]) for i, r in enumerate(top5))
             st.markdown(card_wrap(
                 section_header(SECTION_META["attention"], "Top 5 Accounts Needing Attention")
-                + rows, CORAL
+                + rows, CORAL, _full_h=True
             ), unsafe_allow_html=True)
 
         narrative_html = md_lib.markdown(pf_narrative) if _HAS_MD else '<p>' + pf_narrative.replace(chr(10), '<br/>') + '</p>'
+        # Strip any bare <p> and <ul> tags that markdown() emits so we can
+        # re-wrap them with consistent app typography.
+        _NAR_STYLE = (
+            "font-family:system-ui,'Segoe UI',sans-serif;"
+            "font-size:0.91rem;color:#33414F;line-height:1.7;"
+        )
+        _NAR_P_STYLE   = "margin:6px 0;"
+        _NAR_LI_STYLE  = "margin:4px 0;"
+        _NAR_H_STYLE   = (
+            "font-family:system-ui,'Segoe UI',sans-serif;"
+            "font-weight:700;font-size:0.95rem;color:" + INK + ";margin:14px 0 6px;"
+        )
+        narrative_html = re.sub(r'<p>', '<p style="' + _NAR_P_STYLE + '">', narrative_html)
+        narrative_html = re.sub(r'<li>', '<li style="' + _NAR_LI_STYLE + '">', narrative_html)
+        narrative_html = re.sub(r'<(h[1-6])>', r'<\1 style="' + _NAR_H_STYLE + '">', narrative_html)
+        narrative_html = re.sub(r'<ul>', '<ul style="padding-left:18px;margin:8px 0;">', narrative_html)
+        narrative_html = re.sub(r'<ol>', '<ol style="padding-left:18px;margin:8px 0;">', narrative_html)
         st.markdown(card_wrap(
             section_header(SECTION_META["insights"], "Portfolio Insights")
-            + '<div style="font-size:0.91rem;color:#33414F;line-height:1.65;">' + narrative_html + '</div>',
+            + '<div style="' + _NAR_STYLE + '">' + narrative_html + '</div>',
             TEAL
         ), unsafe_allow_html=True)
 
