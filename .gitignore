@@ -44,3 +44,6 @@ PulseAI.zip
 # ── Binaries ──────────────────────────────────────────────────────────────────
 ngrok.exe
 *.exe
+
+# -- ngrok token (never commit this) -----------------------------------------
+ngrok.env

@@ -12,7 +12,21 @@ set LF_ACCOUNT_FLOW=23c05a7b-e595-4ffb-b783-56bad5ab65dc
 set LF_PORTFOLIO_FLOW=c94cf6ad-4f38-4d92-9f6b-d33c50ca5ba5
 set LF_PORT=7860
 set ST_PORT=8501
-set NGROK_TOKEN=3GVU6b2fVRoNp05anGr18SFKqbT_2TAAE5i7GUmaz8CngPL8g
+
+rem ── Load ngrok token from ngrok.env (never committed to git) ──────────────
+set NGROK_TOKEN=
+if exist "%~dp0ngrok.env" (
+    for /f "usebackq tokens=1,* delims==" %%A in ("%~dp0ngrok.env") do (
+        if /i "%%A"=="NGROK_TOKEN" set NGROK_TOKEN=%%B
+    )
+)
+if "!NGROK_TOKEN!"=="" (
+    echo [ERROR] ngrok token not found.
+    echo         Create a file called ngrok.env next to start.bat with:
+    echo         NGROK_TOKEN=your_token_here
+    echo         Get your token from: https://dashboard.ngrok.com/get-started/your-authtoken
+    pause ^& exit /b 1
+)
 
 python --version >nul 2>&1
 if errorlevel 1 (
