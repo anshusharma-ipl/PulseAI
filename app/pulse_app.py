@@ -1015,11 +1015,11 @@ html, body, [class*="css"] {{
    color (#E7ECF1) meant for labels, which made typed characters nearly
    invisible against its light default background. Give it the same dark
    card treatment as the account dropdown above, with clearly legible text. */
-[data-testid="stSidebar"] .stTextArea label {{ font-size:0.85rem;font-weight:500;color:#A9BACB !important; }}
-[data-testid="stSidebar"] .stTextArea textarea {{
+[data-testid="stSidebar"] .stTextInput label {{ font-size:0.85rem;font-weight:500;color:#A9BACB !important; }}
+[data-testid="stSidebar"] .stTextInput input {{
   background:#16283C !important;border:1px solid #2A415C !important;border-radius:8px !important;
   color:#F2F5F8 !important; }}
-[data-testid="stSidebar"] .stTextArea textarea::placeholder {{ color:#5C7089 !important; }}
+[data-testid="stSidebar"] .stTextInput input::placeholder {{ color:#5C7089 !important; }}
 
 /* Buttons — one consistent shape/radius/padding scale across the whole app;
    primary (filled) vs secondary (outline) is a color distinction only. */
@@ -1203,11 +1203,10 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
-    additional_queries = st.text_area(
+    additional_queries = st.text_input(
         "Additional Queries (optional)",
         key="additional_queries_input",
         placeholder="e.g. How is their NPS trending?",
-        height=90,
     )
 
     is_pending = st.session_state.pending_generate is not None
@@ -1346,7 +1345,10 @@ st.markdown(
 # so the report is the focus and the portfolio-wide view doesn't compete for
 # space — still one click away via the expander if the user wants it back.
 # ─────────────────────────────────────────────────────────────────────────────
-has_active_report = bool(account) and bool(st.session_state.report_cache.get(account))
+has_active_report = (
+    (bool(account) and bool(st.session_state.report_cache.get(account)))
+    or st.session_state.pending_generate is not None
+)
 
 # Place the Refresh button ABOVE the expander so it floats in the same
 # visual row as the expander header. CSS positions it over the header bar.
