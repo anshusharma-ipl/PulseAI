@@ -1015,11 +1015,17 @@ html, body, [class*="css"] {{
    color (#E7ECF1) meant for labels, which made typed characters nearly
    invisible against its light default background. Give it the same dark
    card treatment as the account dropdown above, with clearly legible text. */
-[data-testid="stSidebar"] .stTextInput label {{ font-size:0.85rem;font-weight:500;color:#A9BACB !important; }}
-[data-testid="stSidebar"] .stTextInput input {{
+[data-testid="stSidebar"] .stTextArea label {{ font-size:0.85rem;font-weight:500;color:#A9BACB !important; }}
+[data-testid="stSidebar"] .stTextArea textarea {{
   background:#16283C !important;border:1px solid #2A415C !important;border-radius:8px !important;
   color:#F2F5F8 !important; }}
-[data-testid="stSidebar"] .stTextInput input::placeholder {{ color:#5C7089 !important; }}
+[data-testid="stSidebar"] .stTextArea textarea::placeholder {{ color:#5C7089 !important; }}
+/* Hide the "Press Ctrl+Enter to apply" helper text that Streamlit injects
+   below every text_area — it implies the value won't be read until then,
+   which is confusing since we read from session_state on button click. */
+[data-testid="stSidebar"] .stTextArea + div small,
+[data-testid="stSidebar"] .stTextArea ~ small,
+[data-testid="stSidebar"] [data-testid="InputInstructions"] {{ display:none !important; }}
 
 /* Buttons — one consistent shape/radius/padding scale across the whole app;
    primary (filled) vs secondary (outline) is a color distinction only. */
@@ -1203,10 +1209,11 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
-    additional_queries = st.text_input(
+    additional_queries = st.text_area(
         "Additional Queries (optional)",
         key="additional_queries_input",
         placeholder="e.g. How is their NPS trending?",
+        height=90,
     )
 
     is_pending = st.session_state.pending_generate is not None
@@ -1224,7 +1231,11 @@ with st.sidebar:
         # the actual request happens on the next rerun, once this one has
         # already rendered and the spinner below is on screen.
         st.session_state.pending_generate = account
-        st.session_state.pending_additional_queries = additional_queries.strip()
+        # Read directly from session_state so the value is captured even if
+        # the user didn't press Ctrl+Enter to commit the textarea first.
+        st.session_state.pending_additional_queries = (
+            st.session_state.get("additional_queries_input", "") or ""
+        ).strip()
         st.toast(f"Generating report for {account}…", icon="⚡")
         st.rerun()
 
