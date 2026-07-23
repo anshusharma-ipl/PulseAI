@@ -1011,6 +1011,16 @@ html, body, [class*="css"] {{
 [data-testid="stSidebar"] [data-baseweb="select"] svg {{ fill:#8DA0B4 !important; }}
 [data-testid="stSidebar"] [data-baseweb="popover"] li[role="option"] {{ color:{INK} !important; }}
 
+/* Additional Queries textarea inherited the blanket light sidebar text
+   color (#E7ECF1) meant for labels, which made typed characters nearly
+   invisible against its light default background. Give it the same dark
+   card treatment as the account dropdown above, with clearly legible text. */
+[data-testid="stSidebar"] .stTextArea label {{ font-size:0.85rem;font-weight:500;color:#A9BACB !important; }}
+[data-testid="stSidebar"] .stTextArea textarea {{
+  background:#16283C !important;border:1px solid #2A415C !important;border-radius:8px !important;
+  color:#F2F5F8 !important; }}
+[data-testid="stSidebar"] .stTextArea textarea::placeholder {{ color:#5C7089 !important; }}
+
 /* Buttons — one consistent shape/radius/padding scale across the whole app;
    primary (filled) vs secondary (outline) is a color distinction only. */
 div.stButton > button, div.stDownloadButton > button {{
