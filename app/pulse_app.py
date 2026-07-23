@@ -8,6 +8,7 @@ Changes in v3.0:
   - Full visual redesign: stat tiles, ticket severity badges, KPI chips,
     numbered priority action cards, trend indicators, confidence meter.
   - All HTML built via string concatenation — no nested f-strings.
+  - Additional Queries text field in sidebar — appended to the Langflow input.
 """
 
 import re
@@ -1083,6 +1084,11 @@ if "portfolio_loaded_at" not in st.session_state:
 if "pending_generate" not in st.session_state:
     st.session_state.pending_generate = None
 
+# Holds the free-text "Additional Queries" the user typed at click-time,
+# carried across the same two-rerun handoff as pending_generate above.
+if "pending_additional_queries" not in st.session_state:
+    st.session_state.pending_additional_queries = ""
+
 
 def parse_portfolio_table(text: str):
     lines = [ln for ln in (text or "").strip().split("\n") if ln.strip()]
@@ -1187,6 +1193,13 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
+    additional_queries = st.text_area(
+        "Additional Queries (optional)",
+        key="additional_queries_input",
+        placeholder="e.g. How is their NPS trending?",
+        height=90,
+    )
+
     is_pending = st.session_state.pending_generate is not None
     generate = st.button(
         "\u26a1 Generate Health Report",
@@ -1202,6 +1215,7 @@ with st.sidebar:
         # the actual request happens on the next rerun, once this one has
         # already rendered and the spinner below is on screen.
         st.session_state.pending_generate = account
+        st.session_state.pending_additional_queries = additional_queries.strip()
         st.toast(f"Generating report for {account}…", icon="⚡")
         st.rerun()
 
@@ -1482,6 +1496,12 @@ with st.expander("📊 Portfolio Overview", expanded=not has_active_report):
 pending_account = st.session_state.pending_generate
 if pending_account:
     pending_acc_id = ACCOUNT_ID_MAP.get(pending_account, "")
+    pending_queries = (st.session_state.pending_additional_queries or "").strip()
+    input_value = (
+        f"{pending_acc_id} Additional Queries: {pending_queries}"
+        if pending_queries
+        else pending_acc_id
+    )
     with st.status(
         f"Retrieving signals for {pending_account} ({pending_acc_id})…",
         expanded=True,
@@ -1491,7 +1511,7 @@ if pending_account:
             response = requests.post(
                 LANGFLOW_URL,
                 json={
-                    "input_value": pending_acc_id,
+                    "input_value": input_value,
                     "input_type": "chat",
                     "session_id": pending_acc_id,
                 },
@@ -1504,12 +1524,14 @@ if pending_account:
         except Exception as e:
             status_box.update(label="Unable to reach Langflow.", state="error")
             st.session_state.pending_generate = None
+            st.session_state.pending_additional_queries = ""
             st.error(f"**Unable to reach Langflow.**\n\n`{e}`")
             st.stop()
 
         if response.status_code != 200:
             status_box.update(label="Langflow returned an error.", state="error")
             st.session_state.pending_generate = None
+            st.session_state.pending_additional_queries = ""
             st.error(f"Langflow returned HTTP {response.status_code}:\n```\n{response.text[:400]}\n```")
             st.stop()
 
@@ -1518,6 +1540,7 @@ if pending_account:
         except Exception:
             status_box.update(label="Langflow response was not valid JSON.", state="error")
             st.session_state.pending_generate = None
+            st.session_state.pending_additional_queries = ""
             st.error("Langflow response was not valid JSON.")
             st.stop()
 
@@ -1526,6 +1549,7 @@ if pending_account:
         except Exception:
             status_box.update(label="Unexpected Langflow response structure.", state="error")
             st.session_state.pending_generate = None
+            st.session_state.pending_additional_queries = ""
             st.warning("Unexpected Langflow response structure.")
             st.json(result)
             st.stop()
@@ -1541,6 +1565,7 @@ if pending_account:
     # failure) so this block doesn't re-run on every later rerun, and so the
     # sidebar's "Generating…" note and disabled button turn back off.
     st.session_state.pending_generate = None
+    st.session_state.pending_additional_queries = ""
     st.rerun()
 
 
